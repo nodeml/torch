@@ -34,9 +34,9 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "" SUFFIX ".node")
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_JS_INC})
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
-
+message(STATUS "Using Napi At ${CMAKE_SOURCE_DIR}/node_modules/node-addon-api")
 # Include N-API wrappers
-target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/node_modules/node-addon-api" "src" )
+target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_SOURCE_DIR}/node_modules/node-addon-api" "src" )
 
 # Libtorch
 target_link_libraries(${PROJECT_NAME} ${TORCH_LIBRARIES})
