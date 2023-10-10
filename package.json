@@ -1,0 +1,39 @@
+{
+  "name": "@nodeml/torch",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./lib/index.js",
+  "typings": "./lib/index.d.ts",
+  "scripts": {
+    "start": "node ./dist/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run clean && npx tsc --declaration",
+    "watch": "npm run clean && npx tsc --watch --declaration",
+    "pretty": "npx prettier --write .",
+    "clean": "node ./scripts/clean.js",
+    "install": "cmake-js compile --CDDCMAKE_EXPORT_COMPILE_COMMANDS=1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.17.12",
+    "@babel/eslint-parser": "^7.17.0",
+    "@babel/node": "^7.15.4",
+    "@types/node": "^17.0.34",
+    "@typescript-eslint/eslint-plugin": "^5.24.0",
+    "@typescript-eslint/parser": "^5.24.0",
+    "eslint": "^8.15.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.2.0",
+    "eslint-plugin-promise": "^6.0.0",
+    "prettier": "2.7.1"
+  },
+  "dependencies": {
+    "bindings": "^1.5.0",
+    "cmake-js": "^7.2.1",
+    "node-addon-api": "^7.0.0",
+    "typescript": "^4.9.3"
+  }
+}
