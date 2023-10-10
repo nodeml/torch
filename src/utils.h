@@ -18,7 +18,7 @@ namespace nodeml_torch
         torch::ScalarType stringToScalarType(std::string typeString);
 
         template <typename T>
-        Napi::Array tensorToNestedArray(Napi::Env env,torch::Tensor &tensor,const std::function<T(Napi::Env,Napi::Number)>& convertNumber);
+        Napi::Array tensorToNestedArray(Napi::Env env, torch::Tensor &tensor, const std::function<T(Napi::Env, Napi::Number)> &convertNumber);
 
         Napi::Object Init(Napi::Env env, Napi::Object exports);
     }

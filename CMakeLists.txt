@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.18 FATAL_ERROR)
 # Name of the project (will be the name of the plugin)
-project(nodeml_torch)
+project(nodeml_torch VERSION 1.0)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -59,3 +59,4 @@ if (MSVC)
                      ${TORCH_DLLS}
                      $<TARGET_FILE_DIR:${PROJECT_NAME}>)
 endif (MSVC)
+
