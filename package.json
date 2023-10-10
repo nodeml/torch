@@ -11,7 +11,7 @@
     "watch": "npm run clean && npx tsc --watch --declaration",
     "pretty": "npx prettier --write .",
     "clean": "node ./scripts/clean.js",
-    "install": "cmake-js compile --CDDCMAKE_EXPORT_COMPILE_COMMANDS=1"
+    "install": "cmake-js compile"
   },
   "author": "",
   "license": "ISC",
