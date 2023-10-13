@@ -13,7 +13,7 @@ export const types = {
 export type TensorTypes = typeof types[keyof typeof types];
 
 export declare class Tensor {
-  shape: () => number[];
+  shape: number[];
 
   toArray: () => ArrayTypes;
 
@@ -23,11 +23,15 @@ export declare class Tensor {
 
   type(type: TensorTypes): Tensor;
 
-  dtype: () => TensorTypes;
+  dtype: TensorTypes;
 
   static fromTypedArray(data: ArrayTypes, shape: number[]);
 
   toMultiArray: () => MiltiDim;
+
+  squeeze: (dim: number) => Tensor;
+
+  unsqueeze: (dim: number) => Tensor;
 }
 
 export declare function rand(shape: number[], dtype?: TensorTypes): Tensor;
@@ -36,3 +40,9 @@ export declare function tensor(
   data: ArrayTypes,
   shape?: number[]
 ): torch.Tensor;
+
+export namespace nn {
+  namespace functional {
+    declare function interpolate(tensor: Tensor, size: number[]): Tensor;
+  }
+}

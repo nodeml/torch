@@ -10,22 +10,16 @@ include_directories(${CMAKE_JS_INC})
 
 set(PYTORCH_VERSION 2.1.0)
 
-if(NOT EXISTS ${CMAKE_SOURCE_DIR}/deps/dynamic/libtorch)
-  file(DOWNLOAD https://download.pytorch.org/libtorch/cpu/libtorch-win-shared-with-deps-${PYTORCH_VERSION}%2Bcpu.zip ${CMAKE_CURRENT_SOURCE_DIR}/torch.zip SHOW_PROGRESS)
-  message(STATUS "Extracting")
-  file(ARCHIVE_EXTRACT INPUT ${CMAKE_CURRENT_SOURCE_DIR}/torch.zip DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/deps/dynamic)
-  message(STATUS "Done Extracting")
-  file(REMOVE ${CMAKE_CURRENT_SOURCE_DIR}/torch.zip)
-endif()
+include(${CMAKE_SOURCE_DIR}/utils.cmake)
 
-list(APPEND CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/deps/dynamic/libtorch")
-list(APPEND CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/deps/dynamic/libtorch/share/cmake/Torch")
+DownloadTorch(${PYTORCH_VERSION} "${CMAKE_SOURCE_DIR}/deps/dynamic")
 
-
-find_package(Torch REQUIRED)
+set(TORCH_DEPS_DIR "${CMAKE_SOURCE_DIR}/deps/dynamic/libtorch")
+list(APPEND CMAKE_PREFIX_PATH ${TORCH_DEPS_DIR})
+list(APPEND CMAKE_PREFIX_PATH "${TORCH_DEPS_DIR}/share/cmake/Torch")
 
 # Build a shared library named after the project from the files in `src/`
-file(GLOB SOURCE_FILES "src/*.cc" "src/*.h")
+file(GLOB_RECURSE SOURCE_FILES "*.cc" "*.h")
 
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES} ${CMAKE_JS_SRC})
 
@@ -38,11 +32,11 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_JS_INC})
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
 
-# message(STATUS "Using Napi At ${CMAKE_SOURCE_DIR}/node_modules/node-addon-api")
 # Include N-API wrappers
-target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_SOURCE_DIR}/node_modules/node-addon-api" "${CMAKE_SOURCE_DIR}/../../node-addon-api" "src" )
+IncludeNapi(${PROJECT_NAME})
 
 # Libtorch
+find_package(Torch REQUIRED)
 target_link_libraries(${PROJECT_NAME} ${TORCH_LIBRARIES})
 
 

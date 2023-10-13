@@ -1,0 +1,34 @@
+#include "functional.h"
+#include "../../Tensor.h"
+#include "../../utils.h"
+#include <torch/torch.h>
+
+namespace nodeml_torch {
+namespace nn {
+    namespace functional {
+        Napi::Value interpolate(const Napi::CallbackInfo& info)
+        {
+
+            auto tensor = Napi::ObjectWrap<nodeml_torch::Tensor>::Unwrap(info[0].ToObject());
+            auto env = info.Env();
+            try {
+                return nodeml_torch::Tensor::FromTorchTensor(info,
+                    torch::nn::functional::interpolate(tensor->tensor,
+                        torch::nn::functional::InterpolateFuncOptions()
+                            .size(utils::napiArrayToVector<int64_t>(info[1].As<Napi::Array>()))
+                            .mode(torch::kNearest)));
+            } catch (const std::exception& e) {
+                throw Napi::Error::New(env, e.what());
+            }
+        }
+
+        Napi::Object Init(Napi::Env env)
+        {
+            auto exports = Napi::Object::New(env);
+
+            exports.Set("interpolate", Napi::Function::New(env, interpolate));
+            return exports;
+        }
+    }
+}
+}

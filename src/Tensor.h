@@ -35,6 +35,10 @@ namespace nodeml_torch
 
         Napi::Value Permute(const Napi::CallbackInfo &info);
 
+        Napi::Value Unsqueeze(const Napi::CallbackInfo &info);
+
+        Napi::Value Squeeze(const Napi::CallbackInfo &info);
+
         Napi::Value Slice(const Napi::CallbackInfo &info);
 
         Napi::Value Type(const Napi::CallbackInfo &info);
