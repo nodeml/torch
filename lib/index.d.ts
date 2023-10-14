@@ -78,10 +78,7 @@ export declare function arange(
   dtype?: TensorTypes
 ): Tensor;
 
-export declare function tensor(
-  data: ArrayTypes,
-  shape?: number[]
-): torch.Tensor;
+export declare function tensor(data: ArrayTypes, shape?: number[]): Tensor;
 
 export namespace nn {
   namespace functional {
