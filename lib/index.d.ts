@@ -159,27 +159,27 @@ export declare function arange<T extends TensorTypes = typeof types.float>(
 export declare function greater<
   A extends TensorTypes = typeof types.float,
   B extends TensorTypes = typeof types.float
->(a: A, b: B | number): Tensor<typeof types.bool>;
+>(a: Tensor<A>, b: Tensor<B> | number): Tensor<typeof types.bool>;
 
 export declare function greaterEqual<
   A extends TensorTypes = typeof types.float,
   B extends TensorTypes = typeof types.float
->(a: A, b: B | number): Tensor<typeof types.bool>;
+>(a: Tensor<A>, b: Tensor<B> | number): Tensor<typeof types.bool>;
 
 export declare function less<
   A extends TensorTypes = typeof types.float,
   B extends TensorTypes = typeof types.float
->(a: A, b: B | number): Tensor<typeof types.bool>;
+>(a: Tensor<A>, b: Tensor<B> | number): Tensor<typeof types.bool>;
 
 export declare function lessEqual<
   A extends TensorTypes = typeof types.float,
   B extends TensorTypes = typeof types.float
->(a: A, b: B | number): Tensor<typeof types.bool>;
+>(a: Tensor<A>, b: Tensor<B> | number): Tensor<typeof types.bool>;
 
 export declare function equal<
   A extends TensorTypes = typeof types.float,
   B extends TensorTypes = typeof types.float
->(a: A, b: B | number): Tensor<typeof types.bool>;
+>(a: Tensor<A>, b: Tensor<B> | number): Tensor<typeof types.bool>;
 
 export declare function zeros<T extends TensorTypes = typeof types.float>(
   shape: number[],
