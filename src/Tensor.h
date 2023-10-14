@@ -15,14 +15,15 @@ namespace nodeml_torch
     public:
         static Napi::FunctionReference constructor;
 
-        torch::Tensor tensor;
+        torch::Tensor torchTensor;
 
         static Napi::Object Init(Napi::Env env, Napi::Object exports);
 
+        static bool IsInstance(Napi::Object &obj);
+
         Tensor(const Napi::CallbackInfo &info);
 
-        static Napi::Object FromTorchTensor(
-            const Napi::CallbackInfo &info, const torch::Tensor &torchTensor);
+        static Napi::Object FromTorchTensor(Napi::Env env, const torch::Tensor &targetTorchTensor);
 
         static Napi::Value FromTypedArray(const Napi::CallbackInfo &info);
 

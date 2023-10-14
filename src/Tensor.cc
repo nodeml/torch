@@ -13,12 +13,12 @@ namespace nodeml_torch
     Napi::FunctionReference Tensor::constructor;
 
     template <typename T>
-    Napi::Value tensorToArray(Napi::Env env, const torch::Tensor &tensor)
+    Napi::Value tensorToArray(Napi::Env env, const torch::Tensor &torchTensor)
     {
         Napi::EscapableHandleScope scope(env);
-        assert(tensor.is_contiguous());
-        auto typed_array = Napi::TypedArrayOf<T>::New(env, tensor.numel());
-        memcpy(typed_array.Data(), tensor.data_ptr<T>(), sizeof(T) * tensor.numel());
+        assert(torchTensor.is_contiguous());
+        auto typed_array = Napi::TypedArrayOf<T>::New(env, torchTensor.numel());
+        memcpy(typed_array.Data(), torchTensor.data_ptr<T>(), sizeof(T) * torchTensor.numel());
         return scope.Escape(typed_array);
     }
 
@@ -83,21 +83,24 @@ namespace nodeml_torch
         return exports;
     }
 
+    bool Tensor::IsInstance(Napi::Object &obj)
+    {
+        return obj.InstanceOf(constructor.Value());
+    }
+
     Tensor::Tensor(const Napi::CallbackInfo &info)
         : ObjectWrap(info)
     {
-        tensor = torch::empty(0);
+        torchTensor = torch::empty(0);
     }
 
-    Napi::Object Tensor::FromTorchTensor(
-        const Napi::CallbackInfo &info, const torch::Tensor &torchTensor)
+    Napi::Object Tensor::FromTorchTensor(Napi::Env env, const torch::Tensor &targetTorchTensor)
     {
-        auto env = info.Env();
         try
         {
             Napi::EscapableHandleScope scope(env);
             auto newTensor = Tensor::constructor.New({});
-            Napi::ObjectWrap<Tensor>::Unwrap(newTensor)->tensor = torchTensor;
+            Napi::ObjectWrap<Tensor>::Unwrap(newTensor)->torchTensor = targetTorchTensor;
             return scope.Escape(newTensor).ToObject();
         }
         catch (const std::exception &e)
@@ -114,12 +117,12 @@ namespace nodeml_torch
 
         if (info.Length() > 1 && info[0].IsTypedArray() && info[1].IsArray())
         {
-            return Tensor::FromTorchTensor(info,
+            return Tensor::FromTorchTensor(env,
                                            typedArrayToTensor(env, info[0].As<Napi::TypedArray>(), info[1].As<Napi::Array>()));
         }
         else if (info.Length() > 0 && info[0].IsTypedArray())
         {
-            Tensor::FromTorchTensor(info,
+            Tensor::FromTorchTensor(env,
                                     typedArrayToTensor(env, info[0].As<Napi::TypedArray>(),
                                                        Napi::Array::New(env, {info[0].As<Napi::TypedArray>().ElementLength()})));
         }
@@ -129,7 +132,7 @@ namespace nodeml_torch
     Napi::Value Tensor::Shape(const Napi::CallbackInfo &info)
     {
         auto env = info.Env();
-        auto shape = tensor.sizes();
+        auto shape = torchTensor.sizes();
         auto nodeReturn = Napi::Array::New(env, shape.size());
         int idx = 0;
         for (auto dim : shape)
@@ -146,20 +149,20 @@ namespace nodeml_torch
 
         auto env = info.Env();
 
-        auto st = tensor.scalar_type();
+        auto st = torchTensor.scalar_type();
 
         switch (st)
         {
         case torch::ScalarType::Float:
-            return tensorToArray<float>(env, tensor);
+            return tensorToArray<float>(env, torchTensor);
         case torch::ScalarType::Double:
-            return tensorToArray<double>(env, tensor);
+            return tensorToArray<double>(env, torchTensor);
         case torch::ScalarType::Int:
-            return tensorToArray<int32_t>(env, tensor);
+            return tensorToArray<int32_t>(env, torchTensor);
         case torch::ScalarType::Byte:
-            return tensorToArray<uint8_t>(env, tensor);
+            return tensorToArray<uint8_t>(env, torchTensor);
         case torch::ScalarType::Long:
-            return tensorToArray<int64_t>(env, tensor);
+            return tensorToArray<int64_t>(env, torchTensor);
         default:
             throw Napi::TypeError::New(env, "Unsupported type");
         }
@@ -172,7 +175,7 @@ namespace nodeml_torch
         try
         {
             return FromTorchTensor(
-                info, tensor.reshape(napiArrayToVector<int64_t>(info[0].As<Array>())));
+                env, torchTensor.reshape(napiArrayToVector<int64_t>(info[0].As<Array>())));
         }
         catch (const std::exception &e)
         {
@@ -187,7 +190,7 @@ namespace nodeml_torch
         try
         {
             return FromTorchTensor(
-                info, tensor.permute(napiArrayToVector<int64_t>(info[0].As<Array>())));
+                env, torchTensor.permute(napiArrayToVector<int64_t>(info[0].As<Array>())));
         }
         catch (const std::exception &e)
         {
@@ -200,7 +203,7 @@ namespace nodeml_torch
         auto env = info.Env();
         if (info.Length() >= 1 && info[0].IsNumber())
         {
-            return FromTorchTensor(info, tensor.unsqueeze(info[0].ToNumber().Int64Value()));
+            return FromTorchTensor(env, torchTensor.unsqueeze(info[0].ToNumber().Int64Value()));
         }
         else
         {
@@ -213,7 +216,7 @@ namespace nodeml_torch
         auto env = info.Env();
         if (info.Length() >= 1 && info[0].IsNumber())
         {
-            return FromTorchTensor(info, tensor.squeeze(info[0].ToNumber().Int64Value()));
+            return FromTorchTensor(env, torchTensor.squeeze(info[0].ToNumber().Int64Value()));
         }
         else
         {
@@ -227,8 +230,8 @@ namespace nodeml_torch
 
         if (info.Length() >= 2 && info[0].IsNumber() && info[1].IsNumber())
         {
-            return FromTorchTensor(info,
-                                   tensor.transpose(
+            return FromTorchTensor(env,
+                                   torchTensor.transpose(
                                        info[0].As<Napi::Number>().Int64Value(), info[1].As<Napi::Number>().Int64Value()));
         }
         else
@@ -245,7 +248,7 @@ namespace nodeml_torch
         auto sliceDims = info.Length() >= 1 && info[0].IsNumber() ? info[0].As<Napi::Number>().Int64Value() : 0;
         auto sliceStart = info.Length() >= 2 && info[1].IsNumber() ? info[1].As<Napi::Number>().Int64Value() : NULL;
         auto sliceEnd = info.Length() >= 3 && info[2].IsNumber() ? info[2].As<Napi::Number>().Int64Value() : NULL;
-        return Tensor::FromTorchTensor(info, tensor.slice(sliceDims, sliceStart, sliceEnd));
+        return Tensor::FromTorchTensor(env, torchTensor.slice(sliceDims, sliceStart, sliceEnd));
     }
 
     Napi::Value Tensor::Type(const Napi::CallbackInfo &info)
@@ -260,23 +263,23 @@ namespace nodeml_torch
 
         if (targetType == torchFloatType)
         {
-            return Tensor::FromTorchTensor(info, tensor.toType(torch::ScalarType::Float));
+            return Tensor::FromTorchTensor(env, torchTensor.toType(torch::ScalarType::Float));
         }
         else if (targetType == torchDoubleType)
         {
-            return Tensor::FromTorchTensor(info, tensor.toType(torch::ScalarType::Double));
+            return Tensor::FromTorchTensor(env, torchTensor.toType(torch::ScalarType::Double));
         }
         else if (targetType == torchInt32Type)
         {
-            return Tensor::FromTorchTensor(info, tensor.toType(torch::ScalarType::Int));
+            return Tensor::FromTorchTensor(env, torchTensor.toType(torch::ScalarType::Int));
         }
         else if (targetType == torchLongType)
         {
-            return Tensor::FromTorchTensor(info, tensor.toType(torch::ScalarType::Long));
+            return Tensor::FromTorchTensor(env, torchTensor.toType(torch::ScalarType::Long));
         }
         else if (targetType == torchUint8Type)
         {
-            return Tensor::FromTorchTensor(info, tensor.toType(torch::ScalarType::Byte));
+            return Tensor::FromTorchTensor(env, torchTensor.toType(torch::ScalarType::Byte));
         }
 
         throw Napi::Error::New(env, "Unknown Type");
@@ -286,7 +289,7 @@ namespace nodeml_torch
     {
         auto env = info.Env();
 
-        auto st = tensor.scalar_type();
+        auto st = torchTensor.scalar_type();
 
         switch (st)
         {
@@ -307,83 +310,83 @@ namespace nodeml_torch
 
     Napi::Value Tensor::Clone(const Napi::CallbackInfo &info)
     {
-        return Tensor::FromTorchTensor(info, tensor.clone());
+        return Tensor::FromTorchTensor(info.Env(), torchTensor.clone());
     }
 
     Napi::Value Tensor::Add(const Napi::CallbackInfo &info)
     {
         auto env = info.Env();
 
-        auto a = tensor;
+        auto a = torchTensor;
 
         if (info[0].IsNumber())
         {
             auto b = info[0].ToNumber();
 
             return Tensor::FromTorchTensor(
-                info, a + (utils::isNapiValueInt(env, b) ? b.Int32Value() : b.FloatValue()));
+                env, a + (utils::isNapiValueInt(env, b) ? b.Int32Value() : b.FloatValue()));
         }
 
-        auto b = Napi::ObjectWrap<Tensor>::Unwrap(info[0].ToObject())->tensor;
+        auto b = Napi::ObjectWrap<Tensor>::Unwrap(info[0].ToObject())->torchTensor;
 
-        return Tensor::FromTorchTensor(info, a + b);
+        return Tensor::FromTorchTensor(env, a + b);
     }
 
     Napi::Value Tensor::Sub(const Napi::CallbackInfo &info)
     {
         auto env = info.Env();
 
-        auto a = tensor;
+        auto a = torchTensor;
 
         if (info[0].IsNumber())
         {
             auto b = info[0].ToNumber();
 
             return Tensor::FromTorchTensor(
-                info, a - (utils::isNapiValueInt(env, b) ? b.Int32Value() : b.FloatValue()));
+                env, a - (utils::isNapiValueInt(env, b) ? b.Int32Value() : b.FloatValue()));
         }
 
-        auto b = Napi::ObjectWrap<Tensor>::Unwrap(info[0].ToObject())->tensor;
+        auto b = Napi::ObjectWrap<Tensor>::Unwrap(info[0].ToObject())->torchTensor;
 
-        return Tensor::FromTorchTensor(info, a - b);
+        return Tensor::FromTorchTensor(env, a - b);
     }
 
     Napi::Value Tensor::Mul(const Napi::CallbackInfo &info)
     {
         auto env = info.Env();
 
-        auto a = tensor;
+        auto a = torchTensor;
 
         if (info[0].IsNumber())
         {
             auto b = info[0].ToNumber();
 
             return Tensor::FromTorchTensor(
-                info, a * (utils::isNapiValueInt(env, b) ? b.Int32Value() : b.FloatValue()));
+                env, a * (utils::isNapiValueInt(env, b) ? b.Int32Value() : b.FloatValue()));
         }
 
-        auto b = Napi::ObjectWrap<Tensor>::Unwrap(info[0].ToObject())->tensor;
+        auto b = Napi::ObjectWrap<Tensor>::Unwrap(info[0].ToObject())->torchTensor;
 
-        return Tensor::FromTorchTensor(info, a * b);
+        return Tensor::FromTorchTensor(env, a * b);
     }
 
     Napi::Value Tensor::Div(const Napi::CallbackInfo &info)
     {
         auto env = info.Env();
 
-        auto a = tensor;
+        auto a = torchTensor;
 
         if (info[0].IsNumber())
         {
             auto b = info[0].ToNumber();
 
             return Tensor::FromTorchTensor(
-                info, a / (utils::isNapiValueInt(env, b) ? b.Int32Value() : b.FloatValue()));
+                env, a / (utils::isNapiValueInt(env, b) ? b.Int32Value() : b.FloatValue()));
         }
 
-        auto b = Napi::ObjectWrap<Tensor>::Unwrap(info[0].ToObject())->tensor;
+        auto b = Napi::ObjectWrap<Tensor>::Unwrap(info[0].ToObject())->torchTensor;
 
-        return Tensor::FromTorchTensor(info, a / b);
+        return Tensor::FromTorchTensor(env, a / b);
     }
 
     Napi::Value Tensor::Index(const Napi::CallbackInfo &info)
@@ -399,7 +402,7 @@ namespace nodeml_torch
                 indexes.push_back(utils::napiValueToTorchIndex(env, info[i]));
             }
 
-            return Tensor::FromTorchTensor(info, tensor.index(indexes));
+            return Tensor::FromTorchTensor(env, torchTensor.index(indexes));
         }
         catch (const std::exception &e)
         {
@@ -418,9 +421,9 @@ namespace nodeml_torch
             indexes.push_back(utils::napiValueToTorchIndex(env, info[i]));
         }
 
-        auto b = Napi::ObjectWrap<Tensor>::Unwrap(info[0].ToObject())->tensor;
+        auto b = Napi::ObjectWrap<Tensor>::Unwrap(info[0].ToObject())->torchTensor;
 
-        tensor.index_put_(indexes, b);
+        torchTensor.index_put_(indexes, b);
 
         return Napi::Value();
     }
@@ -429,15 +432,15 @@ namespace nodeml_torch
     {
         auto env = info.Env();
 
-        auto a = tensor;
+        auto a = torchTensor;
 
-        auto b = Napi::ObjectWrap<Tensor>::Unwrap(info[0].ToObject())->tensor;
+        auto b = Napi::ObjectWrap<Tensor>::Unwrap(info[0].ToObject())->torchTensor;
 
-        return Tensor::FromTorchTensor(info, a.matmul(b));
+        return Tensor::FromTorchTensor(env, a.matmul(b));
     }
 
     Napi::Value Tensor::toString(const Napi::CallbackInfo &info)
     {
-        return Napi::String::New(info.Env(), tensor.toString());
+        return Napi::String::New(info.Env(), torchTensor.toString());
     }
 }

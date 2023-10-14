@@ -85,3 +85,11 @@ export namespace nn {
     declare function interpolate(tensor: Tensor, size: number[]): Tensor;
   }
 }
+
+export namespace jit {
+  declare class Module<OutputType = Tensor> {
+    forward: (...args: Tensor) => Promise<OutputType>;
+  }
+
+  declare function load<OutputType = Tensor>(path: string): Module<OutputType>;
+}

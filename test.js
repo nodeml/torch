@@ -9,6 +9,12 @@ console.log(a.toMultiArray());
 // a = a.add(b);
 a.set(b.get(1, [0, 3]), 1, [0, 3]);
 console.log(a.toMultiArray());
+torch.jit
+  .load("./segmentation.torchscript")
+  .forward(torch.rand([1, 3, 640, 640]))
+  .then((h) => {
+    console.log("FORWARD RESULT", h);
+  });
 console.log(
   a.get(1, [0, 3]).toMultiArray(),
   torch.arange(0, 20, torch.types.double).toArray(),

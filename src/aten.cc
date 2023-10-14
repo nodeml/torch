@@ -28,7 +28,7 @@ namespace nodeml_torch
                     options.dtype(torch::ScalarType::Float);
                 }
 
-                return Tensor::FromTorchTensor(info, torch::rand(shape, options));
+                return Tensor::FromTorchTensor(env, torch::rand(shape, options));
             }
             else
             {
@@ -62,17 +62,17 @@ namespace nodeml_torch
 
             if (dtypeIndex == 1)
             {
-                return Tensor::FromTorchTensor(info, torch::arange(info[0].ToNumber().FloatValue()).toType(dtype));
+                return Tensor::FromTorchTensor(env, torch::arange(info[0].ToNumber().FloatValue()).toType(dtype));
             }
             else if (dtypeIndex == 2)
             {
                 return Tensor::FromTorchTensor(
-                    info, torch::arange(info[0].ToNumber().FloatValue(), info[1].ToNumber().FloatValue()).toType(dtype));
+                    env, torch::arange(info[0].ToNumber().FloatValue(), info[1].ToNumber().FloatValue()).toType(dtype));
             }
             else if (dtypeIndex >= 3)
             {
                 return Tensor::FromTorchTensor(
-                    info, torch::arange(info[0].ToNumber().FloatValue(), info[1].ToNumber().FloatValue(), info[2].ToNumber().FloatValue()).toType(dtype));
+                    env, torch::arange(info[0].ToNumber().FloatValue(), info[1].ToNumber().FloatValue(), info[2].ToNumber().FloatValue()).toType(dtype));
             }
 
             return Napi::Value();
