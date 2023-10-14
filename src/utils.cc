@@ -214,6 +214,11 @@ namespace nodeml_torch
                 return value.ToNumber().Int32Value();
             }
 
+            if (value.IsObject() && Tensor::IsInstance(value.As<Napi::Object>()))
+            {
+                return Tensor::FromObject(value)->torchTensor;
+            }
+
             // if (value.IsArray()) {
             //     return torch::Tensor(napiArrayToVector<int>(value.As<Napi::Array>()));
             // }

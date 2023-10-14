@@ -16,7 +16,8 @@ export type TorchIndexOperators =
   | []
   | [NullableNumber, NullableNumber]
   | [NullableNumber, NullableNumber, NullableNumber]
-  | boolean;
+  | boolean
+  | Tensor;
 
 export const types = {
   int32: "int32",

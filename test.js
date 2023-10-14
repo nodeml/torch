@@ -24,3 +24,7 @@ console.log(
   torch.cat([a, b]).toMultiArray(),
   torch.equal(a, b).toMultiArray()
 );
+
+let g = torch.zeros([4, 3]);
+console.log(g.toMultiArray());
+console.log(g.get(4).toMultiArray());
