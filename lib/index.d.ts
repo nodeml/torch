@@ -112,6 +112,10 @@ export declare class Tensor<TensorType extends TensorTypes = TensorTypes> {
   matmul: <T extends TensorTypes = typeof types.float>(a: Tensor<T>) => Tensor;
 
   amax: (dim: number) => Tensor<TensorType>;
+
+  split: (s: number | number[], dim?: number) => Tensor<TensorType>;
+
+  argsort: (dim: number, decending: boolean = false) => Tensor<TensorType>;
 }
 
 export declare function tensor<T extends ArrayTypes = ArrayTypes>(

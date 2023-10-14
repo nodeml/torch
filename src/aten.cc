@@ -267,14 +267,8 @@ namespace nodeml_torch
                 auto env = info.Env();
 
                 auto result = torch::where(Tensor::FromObject(info[0])->torchTensor);
-                auto arr = Napi::Array::New(env, result.size());
 
-                for (auto i = 0; i < result.size(); i++)
-                {
-                    arr.Set(uint32_t(i), Tensor::FromTorchTensor(env, result.at(i)));
-                }
-
-                return arr;
+                return utils::vectorToNapiArray(env, result);
             }
             catch (const std::exception &e)
             {

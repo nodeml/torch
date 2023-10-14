@@ -97,9 +97,23 @@ namespace nodeml_torch
         }
 
         template <typename T>
-        std::vector<T> vectorToNapiArray(const Napi::CallbackInfo &info)
+        Napi::Array vectorToNapiArray(Napi::Env env, std::vector<T> vec)
         {
-            return std::vector<T>;
+            return Napi::Array();
+        }
+
+        template <>
+        Napi::Array vectorToNapiArray(Napi::Env env, std::vector<torch::Tensor> vec)
+        {
+            auto arr = Napi::Array::New(env, vec.size());
+
+            for (auto i = 0; i < vec.size(); i++)
+            {
+                arr.Set(uint32_t(i), Tensor::FromTorchTensor(env, vec.at(i)));
+            }
+
+            return arr;
+            return Napi::Array();
         }
 
         template <>

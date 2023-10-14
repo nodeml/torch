@@ -13,7 +13,7 @@ namespace nodeml_torch
         std::vector<T> napiArrayToVector(const Napi::Array &arr, std::function<T(Napi::Value)> converter, int stopIndex = -1);
 
         template <typename T>
-        std::vector<T> vectorToNapiArray(const Napi::CallbackInfo &info);
+        Napi::Array vectorToNapiArray(Napi::Env env,std::vector<T> vec);
 
         template <typename T>
         torch::ScalarType scalarType();
