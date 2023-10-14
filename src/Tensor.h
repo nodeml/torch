@@ -43,8 +43,6 @@ namespace nodeml_torch
 
         Napi::Value Squeeze(const Napi::CallbackInfo &info);
 
-        Napi::Value Slice(const Napi::CallbackInfo &info);
-
         Napi::Value Type(const Napi::CallbackInfo &info);
 
         Napi::Value DType(const Napi::CallbackInfo &info);

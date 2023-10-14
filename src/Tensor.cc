@@ -81,7 +81,6 @@ namespace nodeml_torch
                                  Tensor::InstanceMethod("reshape", &Tensor::Reshape),
                                  Tensor::InstanceMethod("toString", &Tensor::toString),
                                  Tensor::StaticMethod("fromTypedArray", &Tensor::FromTypedArray),
-                                 Tensor::InstanceMethod("slice", &Tensor::Slice),
                                  Tensor::InstanceMethod("type", &Tensor::Type),
                                  Tensor::InstanceAccessor("dtype", &Tensor::DType, nullptr),
                                  Tensor::InstanceMethod("squeeze", &Tensor::Squeeze),
@@ -266,16 +265,6 @@ namespace nodeml_torch
             throw Napi::Error::New(env, "Why have you done this ?");
         }
         return Napi::Object();
-    }
-
-    Napi::Value Tensor::Slice(const Napi::CallbackInfo &info)
-    {
-        auto env = info.Env();
-        auto sliceOptions = info[0].As<Napi::Object>();
-        auto sliceDims = info.Length() >= 1 && info[0].IsNumber() ? info[0].As<Napi::Number>().Int64Value() : 0;
-        auto sliceStart = info.Length() >= 2 && info[1].IsNumber() ? info[1].As<Napi::Number>().Int64Value() : NULL;
-        auto sliceEnd = info.Length() >= 3 && info[2].IsNumber() ? info[2].As<Napi::Number>().Int64Value() : NULL;
-        return Tensor::FromTorchTensor(env, torchTensor.slice(sliceDims, sliceStart, sliceEnd));
     }
 
     Napi::Value Tensor::Type(const Napi::CallbackInfo &info)

@@ -69,8 +69,6 @@ export declare class Tensor<TensorType extends TensorTypes = TensorTypes> {
 
   reshape: (view: number[]) => Tensor<TensorType>;
 
-  slice: (dim: number, start?: number, stop?: number) => Tensor<TensorType>;
-
   type<T extends TensorTypes>(type: T): Tensor<T>;
 
   dtype: TensorType;
@@ -91,9 +89,9 @@ export declare class Tensor<TensorType extends TensorTypes = TensorTypes> {
 
   div: (a: Tensor | number) => Tensor;
 
-  get: (...operators: TorchIndexOperators) => Tensor<TensorType>;
+  get: (...operators: TorchIndexOperators[]) => Tensor<TensorType>;
 
-  set: (a: Tensor<TensorType>, ...operators: TorchIndexOperators) => void;
+  set: (a: Tensor<TensorType>, ...operators: TorchIndexOperators[]) => void;
 
   clone: () => Tensor<TensorType>;
 
