@@ -147,7 +147,7 @@ namespace nodeml_torch
             return torch::kFloat32;
         }
 
-        bool isNapiValueInt(Napi::Env &env, Napi::Value &num)
+        bool isNapiValueInt(Napi::Env &env, Napi::Value num)
         {
             return env.Global()
                 .Get("Number")

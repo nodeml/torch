@@ -82,6 +82,19 @@ namespace nodeml_torch
             try
             {
                 auto a = Tensor::FromObject(info[0]);
+
+                if (info[1].IsNumber())
+                {
+                    if (utils::isNapiValueInt(info.Env(), info[1]))
+                    {
+                        return Tensor::FromTorchTensor(info.Env(), a->torchTensor > info[1].ToNumber().Int64Value());
+                    }
+                    else
+                    {
+                        return Tensor::FromTorchTensor(info.Env(), a->torchTensor > info[1].ToNumber().DoubleValue());
+                    }
+                }
+
                 auto b = Tensor::FromObject(info[1]);
 
                 return Tensor::FromTorchTensor(info.Env(), a->torchTensor > b->torchTensor);
@@ -97,6 +110,19 @@ namespace nodeml_torch
             try
             {
                 auto a = Tensor::FromObject(info[0]);
+
+                if (info[1].IsNumber())
+                {
+                    if (utils::isNapiValueInt(info.Env(), info[1]))
+                    {
+                        return Tensor::FromTorchTensor(info.Env(), a->torchTensor >= info[1].ToNumber().Int64Value());
+                    }
+                    else
+                    {
+                        return Tensor::FromTorchTensor(info.Env(), a->torchTensor >= info[1].ToNumber().DoubleValue());
+                    }
+                }
+
                 auto b = Tensor::FromObject(info[1]);
 
                 return Tensor::FromTorchTensor(info.Env(), a->torchTensor >= b->torchTensor);
@@ -112,6 +138,19 @@ namespace nodeml_torch
             try
             {
                 auto a = Tensor::FromObject(info[0]);
+
+                if (info[1].IsNumber())
+                {
+                    if (utils::isNapiValueInt(info.Env(), info[1]))
+                    {
+                        return Tensor::FromTorchTensor(info.Env(), a->torchTensor < info[1].ToNumber().Int64Value());
+                    }
+                    else
+                    {
+                        return Tensor::FromTorchTensor(info.Env(), a->torchTensor < info[1].ToNumber().DoubleValue());
+                    }
+                }
+
                 auto b = Tensor::FromObject(info[1]);
 
                 return Tensor::FromTorchTensor(info.Env(), a->torchTensor < b->torchTensor);
@@ -127,6 +166,19 @@ namespace nodeml_torch
             try
             {
                 auto a = Tensor::FromObject(info[0]);
+
+                if (info[1].IsNumber())
+                {
+                    if (utils::isNapiValueInt(info.Env(), info[1]))
+                    {
+                        return Tensor::FromTorchTensor(info.Env(), a->torchTensor <= info[1].ToNumber().Int64Value());
+                    }
+                    else
+                    {
+                        return Tensor::FromTorchTensor(info.Env(), a->torchTensor <= info[1].ToNumber().DoubleValue());
+                    }
+                }
+
                 auto b = Tensor::FromObject(info[1]);
 
                 return Tensor::FromTorchTensor(info.Env(), a->torchTensor <= b->torchTensor);
@@ -142,6 +194,19 @@ namespace nodeml_torch
             try
             {
                 auto a = Tensor::FromObject(info[0]);
+
+                if (info[1].IsNumber())
+                {
+                    if (utils::isNapiValueInt(info.Env(), info[1]))
+                    {
+                        return Tensor::FromTorchTensor(info.Env(), a->torchTensor == info[1].ToNumber().Int64Value());
+                    }
+                    else
+                    {
+                        return Tensor::FromTorchTensor(info.Env(), a->torchTensor == info[1].ToNumber().DoubleValue());
+                    }
+                }
+
                 auto b = Tensor::FromObject(info[1]);
 
                 return Tensor::FromTorchTensor(info.Env(), a->torchTensor == b->torchTensor);

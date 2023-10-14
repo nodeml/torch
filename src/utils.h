@@ -25,7 +25,7 @@ namespace nodeml_torch
                                         const std::function<T(Napi::Env, Napi::Number)> &convertNumber);
 
         // https://github.com/nodejs/node-addon-api/issues/265#issuecomment-552145007
-        bool isNapiValueInt(Napi::Env &env, Napi::Value &num);
+        bool isNapiValueInt(Napi::Env &env, Napi::Value num);
 
         c10::optional<c10::SymInt> intIndexOrNone(const Napi::Value &value);
 
