@@ -2,28 +2,35 @@
 
 #include <napi.h>
 #include <torch/torch.h>
-namespace nodeml_torch {
-namespace utils {
-    template <typename T>
-    std::vector<T> napiArrayToVector(const Napi::Array& arr, int stopIndex = -1);
+namespace nodeml_torch
+{
+    namespace utils
+    {
+        template <typename T>
+        std::vector<T> napiArrayToVector(const Napi::Array &arr, int stopIndex = -1);
 
-    template <typename T> std::vector<T> vectorToNapiArray(const Napi::CallbackInfo& info);
+        template <typename T>
+        std::vector<T> napiArrayToVector(const Napi::Array &arr, std::function<T(Napi::Value)> converter, int stopIndex = -1);
 
-    template <typename T> torch::ScalarType scalarType();
+        template <typename T>
+        std::vector<T> vectorToNapiArray(const Napi::CallbackInfo &info);
 
-    torch::ScalarType stringToScalarType(std::string typeString);
+        template <typename T>
+        torch::ScalarType scalarType();
 
-    template <typename T>
-    Napi::Array tensorToNestedArray(Napi::Env env, torch::Tensor& tensor,
-        const std::function<T(Napi::Env, Napi::Number)>& convertNumber);
+        torch::ScalarType stringToScalarType(std::string typeString);
 
-    // https://github.com/nodejs/node-addon-api/issues/265#issuecomment-552145007
-    bool isNapiValueInt(Napi::Env& env, Napi::Value& num);
+        template <typename T>
+        Napi::Array tensorToNestedArray(Napi::Env env, torch::Tensor &tensor,
+                                        const std::function<T(Napi::Env, Napi::Number)> &convertNumber);
 
-    c10::optional<c10::SymInt> intIndexOrNone(const Napi::Value& value);
+        // https://github.com/nodejs/node-addon-api/issues/265#issuecomment-552145007
+        bool isNapiValueInt(Napi::Env &env, Napi::Value &num);
 
-    torch::indexing::TensorIndex napiValueToTorchIndex(Napi::Env& env, const Napi::Value& value);
+        c10::optional<c10::SymInt> intIndexOrNone(const Napi::Value &value);
 
-    Napi::Object Init(Napi::Env env, Napi::Object exports);
-}
+        torch::indexing::TensorIndex napiValueToTorchIndex(Napi::Env &env, const Napi::Value &value);
+
+        Napi::Object Init(Napi::Env env, Napi::Object exports);
+    }
 }

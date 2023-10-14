@@ -13,6 +13,7 @@ namespace nodeml_torch
             TypeObject.Set("float", torchFloatType);
             TypeObject.Set("uint8", torchUint8Type);
             TypeObject.Set("long", torchLongType);
+            TypeObject.Set("bool", torchBooleanType);
             exports.Set("types", TypeObject);
             return exports;
         }

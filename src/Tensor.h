@@ -25,6 +25,8 @@ namespace nodeml_torch
 
         static Napi::Object FromTorchTensor(Napi::Env env, const torch::Tensor &targetTorchTensor);
 
+        static Tensor *FromObject(Napi::Value value);
+
         static Napi::Value FromTypedArray(const Napi::CallbackInfo &info);
 
         Napi::Value Shape(const Napi::CallbackInfo &info);
@@ -62,6 +64,8 @@ namespace nodeml_torch
         Napi::Value IndexPut(const Napi::CallbackInfo &info);
 
         Napi::Value MatMul(const Napi::CallbackInfo &info);
+
+        Napi::Value AMax(const Napi::CallbackInfo &info);
 
         static Napi::Function GetClass(Napi::Env env);
 

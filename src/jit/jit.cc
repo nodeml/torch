@@ -8,14 +8,22 @@ namespace nodeml_torch
     {
         Napi::Value load(const Napi::CallbackInfo &info)
         {
-            auto env = info.Env();
 
-            if (!info[0].IsString())
+            try
             {
-                throw Napi::Error::New(env, "Path Must Be A String");
-            }
+                auto env = info.Env();
 
-            return Module::FromTorchJitModule(info, torch::jit::load(info[0].ToString().Utf8Value()));
+                if (!info[0].IsString())
+                {
+                    throw Napi::Error::New(env, "Path Must Be A String");
+                }
+
+                return Module::FromTorchJitModule(info, torch::jit::load(info[0].ToString().Utf8Value()));
+            }
+            catch (const std::exception &e)
+            {
+                throw Napi::Error::New(info.Env(), e.what());
+            }
         }
 
         Napi::Object Init(Napi::Env env, Napi::Object exports)

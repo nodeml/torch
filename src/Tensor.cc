@@ -13,13 +13,31 @@ namespace nodeml_torch
     Napi::FunctionReference Tensor::constructor;
 
     template <typename T>
-    Napi::Value tensorToArray(Napi::Env env, const torch::Tensor &torchTensor)
+    Napi::Value tensorToArray(Napi::Env env, const torch::Tensor &torchTensor, std::function<Napi::Value(Napi::Env, T)> converter = nullptr)
     {
-        Napi::EscapableHandleScope scope(env);
-        assert(torchTensor.is_contiguous());
-        auto typed_array = Napi::TypedArrayOf<T>::New(env, torchTensor.numel());
-        memcpy(typed_array.Data(), torchTensor.data_ptr<T>(), sizeof(T) * torchTensor.numel());
-        return scope.Escape(typed_array);
+        if (converter == nullptr)
+        {
+            Napi::EscapableHandleScope scope(env);
+            assert(torchTensor.is_contiguous());
+            auto typed_array = Napi::TypedArrayOf<T>::New(env, torchTensor.numel());
+            memcpy(typed_array.Data(), torchTensor.data_ptr<T>(), sizeof(T) * torchTensor.numel());
+            return scope.Escape(typed_array);
+        }
+        else
+        {
+            auto arr = Napi::Array::New(env, torchTensor.numel());
+
+            assert(torchTensor.is_contiguous());
+
+            T *ptr = (T *)torchTensor.data_ptr();
+
+            for (auto i = 0; i < torchTensor.numel(); i++)
+            {
+                arr.Set(uint32_t(i), converter(env, *ptr++));
+            }
+
+            return arr;
+        }
     }
 
     template <typename T>
@@ -75,7 +93,8 @@ namespace nodeml_torch
                                  Tensor::InstanceMethod("get", &Tensor::Index),
                                  Tensor::InstanceMethod("set", &Tensor::IndexPut),
                                  Tensor::InstanceMethod("clone", &Tensor::Clone),
-                                 Tensor::InstanceMethod("matmul", &Tensor::MatMul)});
+                                 Tensor::InstanceMethod("matmul", &Tensor::MatMul),
+                                 Tensor::InstanceMethod("amax", &Tensor::AMax)});
 
         constructor = Napi::Persistent(func);
         constructor.SuppressDestruct();
@@ -109,6 +128,11 @@ namespace nodeml_torch
         }
 
         return Napi::Object();
+    }
+
+    Tensor *Tensor::FromObject(Napi::Value value)
+    {
+        return Napi::ObjectWrap<Tensor>::Unwrap(value.ToObject());
     }
 
     Napi::Value Tensor::FromTypedArray(const Napi::CallbackInfo &info)
@@ -163,6 +187,9 @@ namespace nodeml_torch
             return tensorToArray<uint8_t>(env, torchTensor);
         case torch::ScalarType::Long:
             return tensorToArray<int64_t>(env, torchTensor);
+        case torch::ScalarType::Bool:
+            return tensorToArray<bool>(env, torchTensor, [=](Napi::Env env, bool value) -> Napi::Boolean
+                                       { return Napi::Boolean::New(env, value); });
         default:
             throw Napi::TypeError::New(env, "Unsupported type");
         }
@@ -316,77 +343,102 @@ namespace nodeml_torch
     Napi::Value Tensor::Add(const Napi::CallbackInfo &info)
     {
         auto env = info.Env();
-
-        auto a = torchTensor;
-
-        if (info[0].IsNumber())
+        try
         {
-            auto b = info[0].ToNumber();
+            auto a = torchTensor;
 
-            return Tensor::FromTorchTensor(
-                env, a + (utils::isNapiValueInt(env, b) ? b.Int32Value() : b.FloatValue()));
+            if (info[0].IsNumber())
+            {
+                auto b = info[0].ToNumber();
+
+                return Tensor::FromTorchTensor(
+                    env, a + (utils::isNapiValueInt(env, b) ? b.Int32Value() : b.FloatValue()));
+            }
+
+            auto b = FromObject(info[0])->torchTensor;
+
+            return Tensor::FromTorchTensor(env, a + b);
         }
-
-        auto b = Napi::ObjectWrap<Tensor>::Unwrap(info[0].ToObject())->torchTensor;
-
-        return Tensor::FromTorchTensor(env, a + b);
+        catch (const std::exception &e)
+        {
+            throw Napi::Error::New(env, e.what());
+        }
     }
 
     Napi::Value Tensor::Sub(const Napi::CallbackInfo &info)
     {
         auto env = info.Env();
-
-        auto a = torchTensor;
-
-        if (info[0].IsNumber())
+        try
         {
-            auto b = info[0].ToNumber();
+            auto a = torchTensor;
 
-            return Tensor::FromTorchTensor(
-                env, a - (utils::isNapiValueInt(env, b) ? b.Int32Value() : b.FloatValue()));
+            if (info[0].IsNumber())
+            {
+                auto b = info[0].ToNumber();
+
+                return Tensor::FromTorchTensor(
+                    env, a - (utils::isNapiValueInt(env, b) ? b.Int32Value() : b.FloatValue()));
+            }
+
+            auto b = FromObject(info[0])->torchTensor;
+
+            return Tensor::FromTorchTensor(env, a - b);
         }
-
-        auto b = Napi::ObjectWrap<Tensor>::Unwrap(info[0].ToObject())->torchTensor;
-
-        return Tensor::FromTorchTensor(env, a - b);
+        catch (const std::exception &e)
+        {
+            throw Napi::Error::New(env, e.what());
+        }
     }
 
     Napi::Value Tensor::Mul(const Napi::CallbackInfo &info)
     {
         auto env = info.Env();
-
-        auto a = torchTensor;
-
-        if (info[0].IsNumber())
+        try
         {
-            auto b = info[0].ToNumber();
+            auto a = torchTensor;
 
-            return Tensor::FromTorchTensor(
-                env, a * (utils::isNapiValueInt(env, b) ? b.Int32Value() : b.FloatValue()));
+            if (info[0].IsNumber())
+            {
+                auto b = info[0].ToNumber();
+
+                return Tensor::FromTorchTensor(
+                    env, a * (utils::isNapiValueInt(env, b) ? b.Int32Value() : b.FloatValue()));
+            }
+
+            auto b = FromObject(info[0])->torchTensor;
+
+            return Tensor::FromTorchTensor(env, a * b);
         }
-
-        auto b = Napi::ObjectWrap<Tensor>::Unwrap(info[0].ToObject())->torchTensor;
-
-        return Tensor::FromTorchTensor(env, a * b);
+        catch (const std::exception &e)
+        {
+            throw Napi::Error::New(env, e.what());
+        }
     }
 
     Napi::Value Tensor::Div(const Napi::CallbackInfo &info)
     {
         auto env = info.Env();
 
-        auto a = torchTensor;
-
-        if (info[0].IsNumber())
+        try
         {
-            auto b = info[0].ToNumber();
+            auto a = torchTensor;
 
-            return Tensor::FromTorchTensor(
-                env, a / (utils::isNapiValueInt(env, b) ? b.Int32Value() : b.FloatValue()));
+            if (info[0].IsNumber())
+            {
+                auto b = info[0].ToNumber();
+
+                return Tensor::FromTorchTensor(
+                    env, a / (utils::isNapiValueInt(env, b) ? b.Int32Value() : b.FloatValue()));
+            }
+
+            auto b = FromObject(info[0])->torchTensor;
+
+            return Tensor::FromTorchTensor(env, a / b);
         }
-
-        auto b = Napi::ObjectWrap<Tensor>::Unwrap(info[0].ToObject())->torchTensor;
-
-        return Tensor::FromTorchTensor(env, a / b);
+        catch (const std::exception &e)
+        {
+            throw Napi::Error::New(env, e.what());
+        }
     }
 
     Napi::Value Tensor::Index(const Napi::CallbackInfo &info)
@@ -414,29 +466,55 @@ namespace nodeml_torch
     {
         auto env = info.Env();
 
-        std::vector<torch::indexing::TensorIndex> indexes;
-
-        for (int i = 1; i < info.Length(); i++)
+        try
         {
-            indexes.push_back(utils::napiValueToTorchIndex(env, info[i]));
+            std::vector<torch::indexing::TensorIndex> indexes;
+
+            for (int i = 1; i < info.Length(); i++)
+            {
+                indexes.push_back(utils::napiValueToTorchIndex(env, info[i]));
+            }
+
+            auto b = FromObject(info[0])->torchTensor;
+
+            torchTensor.index_put_(indexes, b);
+
+            return Napi::Value();
         }
-
-        auto b = Napi::ObjectWrap<Tensor>::Unwrap(info[0].ToObject())->torchTensor;
-
-        torchTensor.index_put_(indexes, b);
-
-        return Napi::Value();
+        catch (const std::exception &e)
+        {
+            throw Napi::Error::New(env, e.what());
+        }
     }
 
     Napi::Value Tensor::MatMul(const Napi::CallbackInfo &info)
     {
         auto env = info.Env();
+        try
+        {
+            auto a = torchTensor;
 
-        auto a = torchTensor;
+            auto b = FromObject(info[0])->torchTensor;
 
-        auto b = Napi::ObjectWrap<Tensor>::Unwrap(info[0].ToObject())->torchTensor;
+            return Tensor::FromTorchTensor(env, a.matmul(b));
+        }
+        catch (const std::exception &e)
+        {
+            throw Napi::Error::New(env, e.what());
+        }
+    }
 
-        return Tensor::FromTorchTensor(env, a.matmul(b));
+    Napi::Value Tensor::AMax(const Napi::CallbackInfo &info)
+    {
+        auto env = info.Env();
+        try
+        {
+            return Tensor::FromTorchTensor(env, torchTensor.amax(info[0].As<Napi::Number>().Int64Value()));
+        }
+        catch (const std::exception &e)
+        {
+            throw Napi::Error::New(env, e.what());
+        }
     }
 
     Napi::Value Tensor::toString(const Napi::CallbackInfo &info)

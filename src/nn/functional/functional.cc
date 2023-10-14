@@ -12,10 +12,11 @@ namespace nodeml_torch
             Napi::Value interpolate(const Napi::CallbackInfo &info)
             {
 
-                auto tensor = Napi::ObjectWrap<nodeml_torch::Tensor>::Unwrap(info[0].ToObject());
                 auto env = info.Env();
                 try
                 {
+                    auto tensor = nodeml_torch::Tensor::FromObject(info[0]);
+
                     return nodeml_torch::Tensor::FromTorchTensor(env,
                                                                  torch::nn::functional::interpolate(tensor->torchTensor,
                                                                                                     torch::nn::functional::InterpolateFuncOptions()
