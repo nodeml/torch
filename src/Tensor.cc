@@ -82,6 +82,7 @@ namespace nodeml_torch
                                  Tensor::InstanceMethod("toString", &Tensor::toString),
                                  Tensor::StaticMethod("fromTypedArray", &Tensor::FromTypedArray),
                                  Tensor::InstanceMethod("type", &Tensor::Type),
+                                 Tensor::InstanceMethod("transpose", &Tensor::Transpose),
                                  Tensor::InstanceAccessor("dtype", &Tensor::DType, nullptr),
                                  Tensor::InstanceMethod("squeeze", &Tensor::Squeeze),
                                  Tensor::InstanceMethod("unsqueeze", &Tensor::Unsqueeze),
@@ -254,17 +255,16 @@ namespace nodeml_torch
     {
         auto env = info.Env();
 
-        if (info.Length() >= 2 && info[0].IsNumber() && info[1].IsNumber())
+        try
         {
             return FromTorchTensor(env,
                                    torchTensor.transpose(
                                        info[0].As<Napi::Number>().Int64Value(), info[1].As<Napi::Number>().Int64Value()));
         }
-        else
+        catch (const std::exception &e)
         {
-            throw Napi::Error::New(env, "Why have you done this ?");
+            throw Napi::Error::New(env, e.what());
         }
-        return Napi::Object();
     }
 
     Napi::Value Tensor::Type(const Napi::CallbackInfo &info)

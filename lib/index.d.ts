@@ -69,6 +69,8 @@ export declare class Tensor<TensorType extends TensorTypes = TensorTypes> {
 
   reshape: (view: number[]) => Tensor<TensorType>;
 
+  transpose: (dim0: number, dim1: number) => Tensor<TensorType>;
+
   type<T extends TensorTypes>(type: T): Tensor<T>;
 
   dtype: TensorType;
