@@ -1,8 +1,16 @@
+//C++ Tensor Slicing https://stackoverflow.com/questions/56908893/copy-a-chunk-of-one-tensor-into-another-one-in-c-api?rq=4
 const torch = require("./lib");
-const imageExample = torch.rand([3, 200, 500]);
-console.log(imageExample.shape);
+
+let a = torch.tensor(new Int32Array([1, 2, 3, 4, 5, 6])).reshape([2, 3]);
+let b = torch
+  .tensor(new Int32Array([1, 2, 3, 4, 5, 6].reverse()))
+  .reshape([2, 3]);
+console.log(a.toMultiArray());
+// a = a.add(b);
+a.set(b.get(1, [0, 3]), 1, [0, 3]);
+console.log(a.toMultiArray());
 console.log(
-  torch.nn.functional
-    .interpolate(imageExample.unsqueeze(0), [300, 1000])
-    .squeeze(0).dtype
+  a.get(1, [0, 3]).toMultiArray(),
+  torch.arange(0, 20, torch.types.double).toArray(),
+  torch.arange(0, 20, torch.types.uint8).toArray()
 );

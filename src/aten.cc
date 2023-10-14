@@ -37,9 +37,51 @@ namespace nodeml_torch
             return Napi::Value();
         }
 
+        Napi::Value arange(const Napi::CallbackInfo &info)
+        {
+            auto env = info.Env();
+            auto dtypeIndex = info.Length() - 1;
+
+            if (dtypeIndex <= 0)
+            {
+                throw Napi::Error::New(env, "Missing Arguments");
+            }
+
+            c10::ScalarType dtype;
+
+            if (!info[dtypeIndex].IsNumber())
+            {
+                auto type = info[dtypeIndex].As<Napi::String>().Utf8Value();
+                dtype = utils::stringToScalarType(type);
+            }
+            else
+            {
+                dtype = torch::ScalarType::Float;
+                dtypeIndex++;
+            }
+
+            if (dtypeIndex == 1)
+            {
+                return Tensor::FromTorchTensor(info, torch::arange(info[0].ToNumber().FloatValue()).toType(dtype));
+            }
+            else if (dtypeIndex == 2)
+            {
+                return Tensor::FromTorchTensor(
+                    info, torch::arange(info[0].ToNumber().FloatValue(), info[1].ToNumber().FloatValue()).toType(dtype));
+            }
+            else if (dtypeIndex >= 3)
+            {
+                return Tensor::FromTorchTensor(
+                    info, torch::arange(info[0].ToNumber().FloatValue(), info[1].ToNumber().FloatValue(), info[2].ToNumber().FloatValue()).toType(dtype));
+            }
+
+            return Napi::Value();
+        }
+
         Napi::Object Init(Napi::Env env, Napi::Object exports)
         {
             exports.Set("rand", Napi::Function::New(env, randTensor));
+            exports.Set("arange", Napi::Function::New(env, arange));
             return exports;
         }
     }

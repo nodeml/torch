@@ -94,11 +94,5 @@
         "ranges": "cpp",
         "span": "cpp"
     },
-    "C_Cpp.clang_format_fallbackStyle": "{ BasedOnStyle: WebKit, ColumnLimit: 100 }",
-    "clangd.fallbackFlags": [
-        "-I${workspaceFolder}/**",
-        "-I${workspaceFolder}/src/**",
-        "-I${APPDATA}/../Local/node-gyp/Cache/**/include/node",
-        "-I${workspaceFolder}/deps/libtorch/include"
-    ]
 }
+// "C_Cpp.clang_format_fallbackStyle": "{ BasedOnStyle: WebKit, ColumnLimit: 100 }",

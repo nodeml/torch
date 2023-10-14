@@ -7,8 +7,8 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "noImplicitAny": true,
-    "sourceMap": true,
-    "outDir": "dist",
+    "sourceMap": false,
+    "outDir": "test",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "jsx": "react-jsx",
@@ -20,7 +20,8 @@
     },
   },
   "include": [
-    "lib/**/*"
+    "test/**/*",
+    "test.js"
   ],
   "exclude": [
     "node_modules"

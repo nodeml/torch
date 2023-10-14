@@ -2,24 +2,28 @@
 
 #include <napi.h>
 #include <torch/torch.h>
-namespace nodeml_torch
-{
-    namespace utils
-    {
-        template <typename T>
-        std::vector<T> napiArrayToVector(const Napi::Array &arr);
+namespace nodeml_torch {
+namespace utils {
+    template <typename T>
+    std::vector<T> napiArrayToVector(const Napi::Array& arr, int stopIndex = -1);
 
-        template <typename T>
-        std::vector<T> vectorToNapiArray(const Napi::CallbackInfo &info);
+    template <typename T> std::vector<T> vectorToNapiArray(const Napi::CallbackInfo& info);
 
-        template <typename T>
-        torch::ScalarType scalarType();
+    template <typename T> torch::ScalarType scalarType();
 
-        torch::ScalarType stringToScalarType(std::string typeString);
+    torch::ScalarType stringToScalarType(std::string typeString);
 
-        template <typename T>
-        Napi::Array tensorToNestedArray(Napi::Env env, torch::Tensor &tensor, const std::function<T(Napi::Env, Napi::Number)> &convertNumber);
+    template <typename T>
+    Napi::Array tensorToNestedArray(Napi::Env env, torch::Tensor& tensor,
+        const std::function<T(Napi::Env, Napi::Number)>& convertNumber);
 
-        Napi::Object Init(Napi::Env env, Napi::Object exports);
-    }
+    // https://github.com/nodejs/node-addon-api/issues/265#issuecomment-552145007
+    bool isNapiValueInt(Napi::Env& env, Napi::Value& num);
+
+    c10::optional<c10::SymInt> intIndexOrNone(const Napi::Value& value);
+
+    torch::indexing::TensorIndex napiValueToTorchIndex(Napi::Env& env, const Napi::Value& value);
+
+    Napi::Object Init(Napi::Env env, Napi::Object exports);
+}
 }

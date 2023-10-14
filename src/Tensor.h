@@ -3,8 +3,8 @@
 #include <napi.h>
 
 #include <memory>
-#include <torch/torch.h>
 #include <string>
+#include <torch/torch.h>
 
 namespace nodeml_torch
 {
@@ -21,7 +21,8 @@ namespace nodeml_torch
 
         Tensor(const Napi::CallbackInfo &info);
 
-        static Napi::Object FromTorchTensor(const Napi::CallbackInfo &info, const torch::Tensor &torchTensor);
+        static Napi::Object FromTorchTensor(
+            const Napi::CallbackInfo &info, const torch::Tensor &torchTensor);
 
         static Napi::Value FromTypedArray(const Napi::CallbackInfo &info);
 
@@ -44,6 +45,22 @@ namespace nodeml_torch
         Napi::Value Type(const Napi::CallbackInfo &info);
 
         Napi::Value DType(const Napi::CallbackInfo &info);
+
+        Napi::Value Clone(const Napi::CallbackInfo &info);
+
+        Napi::Value Add(const Napi::CallbackInfo &info);
+
+        Napi::Value Sub(const Napi::CallbackInfo &info);
+
+        Napi::Value Mul(const Napi::CallbackInfo &info);
+
+        Napi::Value Div(const Napi::CallbackInfo &info);
+
+        Napi::Value Index(const Napi::CallbackInfo &info);
+
+        Napi::Value IndexPut(const Napi::CallbackInfo &info);
+
+        Napi::Value MatMul(const Napi::CallbackInfo &info);
 
         static Napi::Function GetClass(Napi::Env env);
 

@@ -5,10 +5,10 @@
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
   "scripts": {
-    "start": "node ./dist/index.js",
+    "start": "node ./test/test.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm run clean && npx tsc --declaration",
-    "watch": "npm run clean && npx tsc --watch --declaration",
+    "build": "npm run clean && npx tsc",
+    "watch": "npm run clean && npx tsc --watch",
     "pretty": "npx prettier --write .",
     "clean": "node ./scripts/clean.js",
     "install": "cmake-js compile"
