@@ -21,5 +21,6 @@ console.log(
   torch.arange(0, 20, torch.types.uint8).toArray(),
   a.amax(0).toMultiArray(),
   b.toMultiArray(),
+  torch.cat([a, b]).toMultiArray(),
   torch.equal(a, b).toMultiArray()
 );

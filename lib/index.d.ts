@@ -81,21 +81,32 @@ export declare class Tensor<TensorType extends TensorTypes = TensorTypes> {
 
   unsqueeze: (dim: number) => Tensor<TensorType>;
 
-  add: (a: Tensor | number) => Tensor;
+  add: <T extends TensorTypes = typeof types.float>(
+    a: Tensor<T> | number
+  ) => Tensor;
 
-  sub: (a: Tensor | number) => Tensor;
+  sub: <T extends TensorTypes = typeof types.float>(
+    a: Tensor<T> | number
+  ) => Tensor;
 
-  mul: (a: Tensor | number) => Tensor;
+  mul: <T extends TensorTypes = typeof types.float>(
+    a: Tensor<T> | number
+  ) => Tensor;
 
-  div: (a: Tensor | number) => Tensor;
+  div: <T extends TensorTypes = typeof types.float>(
+    a: Tensor<T> | number
+  ) => Tensor;
 
   get: (...operators: TorchIndexOperators[]) => Tensor<TensorType>;
 
-  set: (a: Tensor<TensorType>, ...operators: TorchIndexOperators[]) => void;
+  set: <T extends TensorTypes = TensorType>(
+    a: Tensor<T>,
+    ...operators: TorchIndexOperators[]
+  ) => void;
 
   clone: () => Tensor<TensorType>;
 
-  matmul: (a: Tensor) => Tensor;
+  matmul: <T extends TensorTypes = typeof types.float>(a: Tensor<T>) => Tensor;
 
   amax: (dim: number) => Tensor<TensorType>;
 }
@@ -145,36 +156,38 @@ export declare function arange<T extends TensorTypes = typeof types.float>(
   dtype?: T
 ): Tensor<T>;
 
-export declare function greater(
-  a: Tensor,
-  b: Tensor | number
-): Tensor<typeof types.bool>;
+export declare function greater<
+  A extends TensorTypes = typeof types.float,
+  B extends TensorTypes = typeof types.float
+>(a: A, b: B | number): Tensor<typeof types.bool>;
 
-export declare function greaterEqual(
-  a: Tensor,
-  b: Tensor | number
-): Tensor<typeof types.bool>;
+export declare function greaterEqual<
+  A extends TensorTypes = typeof types.float,
+  B extends TensorTypes = typeof types.float
+>(a: A, b: B | number): Tensor<typeof types.bool>;
 
-export declare function less(
-  a: Tensor,
-  b: Tensor | number
-): Tensor<typeof types.bool>;
+export declare function less<
+  A extends TensorTypes = typeof types.float,
+  B extends TensorTypes = typeof types.float
+>(a: A, b: B | number): Tensor<typeof types.bool>;
 
-export declare function lessEqual(
-  a: Tensor,
-  b: Tensor | number
-): Tensor<typeof types.bool>;
+export declare function lessEqual<
+  A extends TensorTypes = typeof types.float,
+  B extends TensorTypes = typeof types.float
+>(a: A, b: B | number): Tensor<typeof types.bool>;
 
-export declare function equal(
-  a: Tensor,
-  b: Tensor | number
-): Tensor<typeof types.bool>;
+export declare function equal<
+  A extends TensorTypes = typeof types.float,
+  B extends TensorTypes = typeof types.float
+>(a: A, b: B | number): Tensor<typeof types.bool>;
 
 export declare function zeros<T extends TensorTypes = typeof types.float>(
   shape: number[],
   dtype?: T
 ): Tensor<T>;
 
-export declare function cat(tensors: Tensor[]): Tensor;
+export declare function cat<T extends TensorTypes = typeof types.float>(
+  tensors: Tensor<T>[]
+): Tensor<T>;
 
-export declare function where(condition: Tensor): Tensor[];
+export declare function where(condition: Tensor<typeof types.bool>): Tensor[];
