@@ -88,7 +88,7 @@ export namespace nn {
 
 export namespace jit {
   declare class Module<OutputType = Tensor> {
-    forward: (...args: Tensor) => Promise<OutputType>;
+    forward: (...args: Tensor[]) => Promise<OutputType>;
   }
 
   declare function load<OutputType = Tensor>(path: string): Module<OutputType>;
