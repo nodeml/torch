@@ -113,7 +113,32 @@ namespace nodeml_torch
             }
 
             return arr;
-            return Napi::Array();
+        }
+
+        template <>
+        Napi::Array vectorToNapiArray(Napi::Env env, std::vector<int> vec)
+        {
+            auto arr = Napi::Array::New(env, vec.size());
+
+            for (auto i = 0; i < vec.size(); i++)
+            {
+                arr.Set(uint32_t(i), vec.at(i));
+            }
+
+            return arr;
+        }
+
+        template <>
+        Napi::Array vectorToNapiArray(Napi::Env env, std::vector<size_t> vec)
+        {
+            auto arr = Napi::Array::New(env, vec.size());
+
+            for (auto i = 0; i < vec.size(); i++)
+            {
+                arr.Set(uint32_t(i), vec.at(i));
+            }
+
+            return arr;
         }
 
         template <>

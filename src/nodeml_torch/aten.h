@@ -27,6 +27,10 @@ namespace nodeml_torch
 
         Napi::Value where(const Napi::CallbackInfo &info);
 
+        Napi::Value empty(const Napi::CallbackInfo &info);
+
+        Napi::Value emptyLike(const Napi::CallbackInfo &info);
+
         Napi::Object Init(Napi::Env env, Napi::Object exports);
     }
 }

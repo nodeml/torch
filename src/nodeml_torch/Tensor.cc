@@ -3,6 +3,8 @@
 #include <nodeml_torch/utils.h>
 #include <exception>
 #include <torch/torch.h>
+#include "Tensor.h"
+#include <iostream>
 
 namespace nodeml_torch
 {
@@ -39,6 +41,46 @@ namespace nodeml_torch
             return arr;
         }
     }
+    // 23 times slower than js equivalent
+    // template <typename T>
+    // Napi::Value tensorToMultiArray(Napi::Env env, const torch::Tensor &torchTensor, std::function<Napi::Value(Napi::Env, T)> converter)
+    // {
+    //     auto shape = torchTensor.sizes();
+
+    //     auto result = Napi::Array::New(env, shape.at(0));
+    //     assert(torchTensor.is_contiguous());
+
+    //     T *ptr = (T *)torchTensor.data_ptr();
+
+    //     for (auto i = 0; i < torchTensor.numel(); i++)
+    //     {
+    //         auto position = result;
+    //         auto index = i;
+    //         auto len = shape.size() - 1;
+    //         for (auto j = len; j >= 0 && j <= len; j--)
+    //         {
+    //             auto currentShape = shape.at(j);
+    //             auto currentIndex = index % currentShape;
+    //             index = index / currentShape;
+
+    //             if (position.Get(uint32_t(currentIndex)).IsUndefined())
+    //             {
+    //                 if (j == 0)
+    //                 {
+    //                     position.Set(uint32_t(currentIndex), converter(env, *ptr++));
+    //                 }
+    //                 else
+    //                 {
+    //                     position.Set(uint32_t(currentIndex), Napi::Array::New(env, currentShape));
+    //                 }
+    //             }
+
+    //             position = position.Get(uint32_t(currentIndex)).As<Napi::Array>();
+    //         }
+    //     }
+
+    //     return result;
+    // }
 
     template <typename T>
     torch::Tensor arrayToTensor(
@@ -98,7 +140,8 @@ namespace nodeml_torch
                                  Tensor::InstanceMethod("split", &Tensor::Split),
                                  Tensor::InstanceMethod("argsort", &Tensor::Argsort),
                                  Tensor::InstanceMethod("view", &Tensor::View),
-                                 Tensor::InstanceMethod("any", &Tensor::Any), Tensor::InstanceMethod("max", &Tensor::Max)});
+                                 Tensor::InstanceMethod("any", &Tensor::Any),
+                                 Tensor::InstanceMethod("max", &Tensor::Max)});
 
         constructor = Napi::Persistent(func);
         constructor.SuppressDestruct();
@@ -199,6 +242,44 @@ namespace nodeml_torch
         }
     }
 
+    // Napi::Value Tensor::ToMultiArray(const Napi::CallbackInfo &info)
+    // {
+
+    //     auto env = info.Env();
+
+    //     try
+    //     {
+    //         auto st = torchTensor.scalar_type();
+
+    //         switch (st)
+    //         {
+    //         case torch::ScalarType::Float:
+    //             return tensorToMultiArray<float>(env, torchTensor, [=](Napi::Env env, float value) -> Napi::Number
+    //                                              { return Napi::Number::New(env, value); });
+    //         case torch::ScalarType::Double:
+    //             return tensorToMultiArray<double>(env, torchTensor, [=](Napi::Env env, double value) -> Napi::Number
+    //                                               { return Napi::Number::New(env, value); });
+    //         case torch::ScalarType::Int:
+    //             return tensorToMultiArray<int32_t>(env, torchTensor, [=](Napi::Env env, int32_t value) -> Napi::Number
+    //                                                { return Napi::Number::New(env, value); });
+    //         case torch::ScalarType::Byte:
+    //             return tensorToMultiArray<uint8_t>(env, torchTensor, [=](Napi::Env env, uint8_t value) -> Napi::Number
+    //                                                { return Napi::Number::New(env, value); });
+    //         case torch::ScalarType::Long:
+    //             return tensorToMultiArray<int64_t>(env, torchTensor, [=](Napi::Env env, int64_t value) -> Napi::Number
+    //                                                { return Napi::Number::New(env, value); });
+    //         case torch::ScalarType::Bool:
+    //             return tensorToMultiArray<bool>(env, torchTensor, [=](Napi::Env env, bool value) -> Napi::Boolean
+    //                                             { return Napi::Boolean::New(env, value); });
+    //         default:
+    //             throw Napi::TypeError::New(env, "Unsupported type");
+    //         }
+    //     }
+    //     catch (const std::exception &e)
+    //     {
+    //         throw Napi::Error::New(env, e.what());
+    //     }
+    // }
     Napi::Value Tensor::Reshape(const Napi::CallbackInfo &info)
     {
         auto env = info.Env();

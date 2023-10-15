@@ -33,6 +33,9 @@ namespace nodeml_torch
 
         Napi::Value ToArray(const Napi::CallbackInfo &info);
 
+        // 23 times slower than JS equivalent
+        // Napi::Value ToMultiArray(const Napi::CallbackInfo &info);
+
         Napi::Value Reshape(const Napi::CallbackInfo &info);
 
         Napi::Value Transpose(const Napi::CallbackInfo &info);

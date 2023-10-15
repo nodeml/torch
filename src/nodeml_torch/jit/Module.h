@@ -27,7 +27,11 @@ namespace nodeml_torch
 
             Napi::Value Forward(const Napi::CallbackInfo &info);
 
+            Napi::Value Eval(const Napi::CallbackInfo &info);
+
             Napi::Value toString(const Napi::CallbackInfo &info);
+
+
 
             static Napi::Value IValueToJSType(Napi::Env env, const c10::IValue &iValue);
             static c10::IValue JSTypeToIValue(Napi::Env env, const Napi::Value &jsValue);

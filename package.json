@@ -1,7 +1,7 @@
 {
   "name": "@nodeml/torch",
   "version": "1.0.0",
-  "description": "",
+  "description": "A libtorch binding for nodejs. Currently only supports cpu operations",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
   "repository": {
@@ -16,6 +16,7 @@
     "pretty": "npx prettier --write .",
     "clean": "node ./scripts/clean.js",
     "install": "cmake-js compile",
+    "installd": "cmake-js compile --debug",
     "prebuild": "prebuild --backend cmake-js --include-regex \"\\.[nsd][oyl][dl]?[ie]?b?$\""
   },
   "author": "",

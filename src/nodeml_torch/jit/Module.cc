@@ -1,6 +1,7 @@
 #include <nodeml_torch/jit/Module.h>
 #include <nodeml_torch/FunctionWorker.h>
 #include <nodeml_torch/Tensor.h>
+#include "Module.h"
 namespace nodeml_torch
 {
     namespace jit
@@ -78,6 +79,21 @@ namespace nodeml_torch
                 throw Napi::Error::New(info.Env(), e.what());
             }
         }
+
+        Napi::Value Module::Eval(const Napi::CallbackInfo &info)
+        {
+            try
+            {
+                torchModule.eval();
+                return Napi::Value();
+            }
+            catch (const std::exception &e)
+            {
+                throw Napi::Error::New(info.Env(), e.what());
+            }
+            return Napi::Value();
+        }
+
         Napi::Value Module::toString(const Napi::CallbackInfo &info)
         {
             return Napi::Value();
