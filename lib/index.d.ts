@@ -113,9 +113,11 @@ export declare class Tensor<TensorType extends TensorTypes = TensorTypes> {
 
   amax: (dim: number) => Tensor<TensorType>;
 
-  split: (s: number | number[], dim?: number) => Tensor<TensorType>;
+  split: (s: number | number[], dim?: number) => Tensor<TensorType>[];
 
   argsort: (dim: number, decending: boolean = false) => Tensor<TensorType>;
+
+  max: (dim: number, keepDim: boolean = false) => Tensor<TensorType>;
 }
 
 export declare function tensor<T extends ArrayTypes = ArrayTypes>(

@@ -550,6 +550,32 @@ namespace nodeml_torch
         }
     }
 
+    Napi::Value Tensor::Max(const Napi::CallbackInfo &info)
+    {
+        auto env = info.Env();
+        try
+        {
+            if (info.Length() >= 2)
+            {
+                auto [a, b] = torchTensor.max(info[0].As<Napi::Number>().Int64Value(), info[1].As<Napi::Boolean>().Value());
+
+                std::vector<torch::Tensor> tuple = {a, b};
+
+                return utils::vectorToNapiArray(env, tuple);
+            }
+            else
+            {
+                auto [a, b] = torchTensor.max(info[0].As<Napi::Number>().Int64Value());
+                std::vector<torch::Tensor> tuple = {a, b};
+                return utils::vectorToNapiArray(env, tuple);
+            }
+        }
+        catch (const std::exception &e)
+        {
+            throw Napi::Error::New(env, e.what());
+        }
+    }
+
     Napi::Value Tensor::toString(const Napi::CallbackInfo &info)
     {
         return Napi::String::New(info.Env(), torchTensor.toString());
