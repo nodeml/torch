@@ -96,7 +96,9 @@ namespace nodeml_torch
                                  Tensor::InstanceMethod("matmul", &Tensor::MatMul),
                                  Tensor::InstanceMethod("amax", &Tensor::AMax),
                                  Tensor::InstanceMethod("split", &Tensor::Split),
-                                 Tensor::InstanceMethod("argsort", &Tensor::Argsort)});
+                                 Tensor::InstanceMethod("argsort", &Tensor::Argsort),
+                                 Tensor::InstanceMethod("view", &Tensor::View),
+                                 Tensor::InstanceMethod("any", &Tensor::Any)});
 
         constructor = Napi::Persistent(func);
         constructor.SuppressDestruct();
@@ -568,6 +570,46 @@ namespace nodeml_torch
                 auto [a, b] = torchTensor.max(info[0].As<Napi::Number>().Int64Value());
                 std::vector<torch::Tensor> tuple = {a, b};
                 return utils::vectorToNapiArray(env, tuple);
+            }
+        }
+        catch (const std::exception &e)
+        {
+            throw Napi::Error::New(env, e.what());
+        }
+    }
+
+    Napi::Value Tensor::View(const Napi::CallbackInfo &info)
+    {
+        auto env = info.Env();
+        try
+        {
+            std::vector<int64_t> dims;
+
+            for (auto i = 0; i < info.Length(); i++)
+            {
+                dims.push_back(info[i].As<Napi::Number>().Int64Value());
+            }
+
+            return FromTorchTensor(env, torchTensor.view(dims));
+        }
+        catch (const std::exception &e)
+        {
+            throw Napi::Error::New(env, e.what());
+        }
+    }
+
+    Napi::Value Tensor::Any(const Napi::CallbackInfo &info)
+    {
+        auto env = info.Env();
+        try
+        {
+            if (info.Length() >= 2)
+            {
+                return Tensor::FromTorchTensor(env, torchTensor.argsort(info[0].As<Napi::Number>().Int64Value(), info[1].As<Napi::Boolean>().Value()));
+            }
+            else
+            {
+                return Tensor::FromTorchTensor(env, torchTensor.argsort(info[0].As<Napi::Number>().Int64Value()));
             }
         }
         catch (const std::exception &e)

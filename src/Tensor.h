@@ -71,6 +71,10 @@ namespace nodeml_torch
 
         Napi::Value Max(const Napi::CallbackInfo &info);
 
+        Napi::Value View(const Napi::CallbackInfo &info);
+
+        Napi::Value Any(const Napi::CallbackInfo &info);
+
         static Napi::Function GetClass(Napi::Env env);
 
         Napi::Value toString(const Napi::CallbackInfo &info);

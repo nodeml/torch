@@ -117,7 +117,19 @@ export declare class Tensor<TensorType extends TensorTypes = TensorTypes> {
 
   argsort: (dim: number, decending: boolean = false) => Tensor<TensorType>;
 
-  max: (dim: number, keepDim: boolean = false) => Tensor<TensorType>;
+  max: (
+    dim: number,
+    keepDim: boolean = false
+  ) => [Tensor<TensorType>, Tensor<typeof types.int32>];
+
+  view: (...dims: number[]) => Tensor<TensorType>;
+
+  any: (
+    dim: number,
+    keepDim: boolean = false
+  ) => Tensor<
+    TensorType extends typeof types.uint8 ? TensorType : typeof types.bool
+  >;
 }
 
 export declare function tensor<T extends ArrayTypes = ArrayTypes>(
@@ -196,7 +208,8 @@ export declare function zeros<T extends TensorTypes = typeof types.float>(
 ): Tensor<T>;
 
 export declare function cat<T extends TensorTypes = typeof types.float>(
-  tensors: Tensor<T>[]
+  tensors: Tensor<T>[],
+  dim: number = 0
 ): Tensor<T>;
 
 export declare function where(condition: Tensor<typeof types.bool>): Tensor[];
