@@ -98,7 +98,7 @@ namespace nodeml_torch
                                  Tensor::InstanceMethod("split", &Tensor::Split),
                                  Tensor::InstanceMethod("argsort", &Tensor::Argsort),
                                  Tensor::InstanceMethod("view", &Tensor::View),
-                                 Tensor::InstanceMethod("any", &Tensor::Any)});
+                                 Tensor::InstanceMethod("any", &Tensor::Any), Tensor::InstanceMethod("max", &Tensor::Max)});
 
         constructor = Napi::Persistent(func);
         constructor.SuppressDestruct();

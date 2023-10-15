@@ -95,3 +95,4 @@ projects/
 *.onnx
 **/build/**
 deps/dynamic/*
+prebuilds/*
