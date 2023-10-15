@@ -2,4 +2,5 @@
 #include "Tensor.h"
 #include "types.h"
 #include "utils.h"
-#include "nn.h"
+#include "./jit.h"
+#include "./nn.h"
