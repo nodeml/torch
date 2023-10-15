@@ -1,6 +1,6 @@
-#include "Tensor.h"
-#include "types.h"
-#include "utils.h"
+#include <nodeml_torch/Tensor.h>
+#include <nodeml_torch/types.h>
+#include <nodeml_torch/utils.h>
 #include <exception>
 #include <torch/torch.h>
 

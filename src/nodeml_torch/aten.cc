@@ -1,7 +1,7 @@
 #include "aten.h"
 
-#include "tensor.h"
-#include "utils.h"
+#include <nodeml_torch/Tensor.h>
+#include <nodeml_torch/utils.h>
 
 namespace nodeml_torch
 {

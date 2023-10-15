@@ -1,6 +1,6 @@
-#include "functional.h"
-#include "../../Tensor.h"
-#include "../../utils.h"
+#include <nodeml_torch/nn/functional.h>
+#include <nodeml_torch/Tensor.h>
+#include <nodeml_torch/utils.h>
 #include <torch/torch.h>
 
 namespace nodeml_torch

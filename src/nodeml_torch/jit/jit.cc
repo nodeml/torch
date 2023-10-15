@@ -1,6 +1,6 @@
-#include "jit.h"
+#include <nodeml_torch/jit/jit.h>
 #include <torch/script.h>
-#include "Module.h"
+#include <nodeml_torch/jit/Module.h>
 
 namespace nodeml_torch
 {

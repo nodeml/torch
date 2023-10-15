@@ -1,10 +1,10 @@
 #include <napi.h>
-#include "Tensor.h"
-#include "utils.h"
-#include "types.h"
-#include "aten.h"
-#include "./nn/nn.h"
-#include "./jit/jit.h"
+#include <nodeml_torch/Tensor.h>
+#include <nodeml_torch/utils.h>
+#include <nodeml_torch/types.h>
+#include <nodeml_torch/aten.h>
+#include <nodeml_torch/nn/nn.h>
+#include <nodeml_torch/jit/jit.h>
 
 Napi::Object InitModule(Napi::Env env, Napi::Object exports)
 {
