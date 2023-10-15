@@ -5,6 +5,7 @@
 #include <nodeml_torch/aten.h>
 #include <nodeml_torch/nn/nn.h>
 #include <nodeml_torch/jit/jit.h>
+#include <nodeml_torch/vision/vision.h>
 
 Napi::Object InitModule(Napi::Env env, Napi::Object exports)
 {
@@ -14,6 +15,8 @@ Napi::Object InitModule(Napi::Env env, Napi::Object exports)
     nodeml_torch::aten::Init(env, exports);
     nodeml_torch::nn::Init(env, exports);
     nodeml_torch::jit::Init(env, exports);
+    nodeml_torch::vision::Init(env, exports);
+
     return exports;
 }
 

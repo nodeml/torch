@@ -137,23 +137,6 @@ export declare function tensor<T extends ArrayTypes = ArrayTypes>(
   shape?: number[]
 ): Tensor<ArrayTypeToTensorType<T>>;
 
-export namespace nn {
-  namespace functional {
-    declare function interpolate<T extends TensorTypes>(
-      tensor: Tensor<T>,
-      size: number[]
-    ): Tensor<T>;
-  }
-}
-
-export namespace jit {
-  declare class Module<OutputType = Tensor> {
-    forward: (...args: Tensor[]) => Promise<OutputType>;
-  }
-
-  declare function load<OutputType = Tensor>(path: string): Module<OutputType>;
-}
-
 export declare function rand<T extends TensorTypes = typeof types.float>(
   shape: number[],
   dtype?: T
@@ -222,3 +205,30 @@ export declare function empty<T extends TensorTypes = typeof types.float>(
 export declare function emptyLike<T extends TensorTypes>(
   tensor: Tensor<T>
 ): Tensor<T>;
+
+export namespace nn {
+  namespace functional {
+    declare function interpolate<T extends TensorTypes>(
+      tensor: Tensor<T>,
+      size: number[]
+    ): Tensor<T>;
+  }
+}
+
+export namespace jit {
+  declare class Module<OutputType = Tensor> {
+    forward: (...args: Tensor[]) => Promise<OutputType>;
+  }
+
+  declare function load<OutputType = Tensor>(path: string): Module<OutputType>;
+}
+
+export namespace vision {
+  namespace ops {
+    declare function nms<B extends TensorTypes, S extends TensorTypes>(
+      boxes: Tensor<B>,
+      scores: Tensor<S>,
+      iouThreshold: number
+    ): Tensor<B>;
+  }
+}

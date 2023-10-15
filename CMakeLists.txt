@@ -9,10 +9,9 @@ add_definitions(-DNAPI_VERSION=4)
 include_directories(${CMAKE_JS_INC})
 
 set(PYTORCH_VERSION 2.1.0)
+set(PYTORCH_VISION_VERSION 0.16.0)
 
 include(${CMAKE_SOURCE_DIR}/utils.cmake)
-
-DownloadTorch(${PYTORCH_VERSION} "${CMAKE_SOURCE_DIR}/deps/dynamic")
 
 set(TORCH_DEPS_DIR "${CMAKE_SOURCE_DIR}/deps/dynamic/libtorch")
 list(APPEND CMAKE_PREFIX_PATH ${TORCH_DEPS_DIR})
@@ -36,22 +35,55 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
 # Include N-API wrappers
 IncludeNapi(${PROJECT_NAME})
 
-# Libtorch
-find_package(Torch REQUIRED)
-target_link_libraries(${PROJECT_NAME} ${TORCH_LIBRARIES})
-
-
 # Essential library files to link to a node addon
 # You should add this line in every CMake.js based project
 target_link_libraries(${PROJECT_NAME} ${CMAKE_JS_LIB})
 
+#Torch
+set(TORCH_DEPS_DIR ${CMAKE_SOURCE_DIR}/deps/dynamic/libtorch)
+list(APPEND CMAKE_PREFIX_PATH ${TORCH_DEPS_DIR})
+list(APPEND CMAKE_PREFIX_PATH "${TORCH_DEPS_DIR}/share/cmake/Torch")
+DownloadTorch(${PYTORCH_VERSION} "${CMAKE_SOURCE_DIR}/deps/dynamic")
+find_package(Torch REQUIRED)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
+target_link_libraries(${PROJECT_NAME} ${TORCH_LIBRARIES})
+
+# Torchvision
+set(TORCH_VISION_DEPS_DIR ${CMAKE_SOURCE_DIR}/deps/dynamic/torchvision)
+list(APPEND CMAKE_PREFIX_PATH ${TORCH_VISION_DEPS_DIR})
+list(APPEND CMAKE_PREFIX_PATH "${TORCH_VISION_DEPS_DIR}/share/cmake/TorchVision")
+if(NOT EXISTS ${TORCH_VISION_DEPS_DIR})
+  execute_process(
+    COMMAND git clone --depth 1 --branch v${PYTORCH_VISION_VERSION} https://github.com/pytorch/vision
+  )
+  # execute_process(
+  #   COMMAND git -C "${CMAKE_CURRENT_BINARY_DIR}/vision/" apply "${CMAKE_CURRENT_SOURCE_DIR}/patches/0001-Remove-native-image-support.patch"
+  # )
+  execute_process(
+    COMMAND ${CMAKE_COMMAND} -DCMAKE_BUILD_TYPE=Release -DUSE_PYTHON=ON -DCMAKE_PREFIX_PATH=${TORCH_DEPS_DIR} -S "${CMAKE_CURRENT_BINARY_DIR}/vision/" -B "${CMAKE_CURRENT_BINARY_DIR}/vision/build/"
+  )
+  execute_process(
+    COMMAND ${CMAKE_COMMAND} --build "${CMAKE_CURRENT_BINARY_DIR}/vision/build" --config Release
+  )
+  execute_process(
+    COMMAND ${CMAKE_COMMAND} --install "${CMAKE_CURRENT_BINARY_DIR}/vision/build" --prefix ${TORCH_VISION_DEPS_DIR}
+  )
+
+  file(REMOVE_RECURSE ${CMAKE_SOURCE_DIR}/vision)
+endif()
+find_package(TorchVision REQUIRED)
+target_include_directories(${PROJECT_NAME} PRIVATE "${TORCH_VISION_DEPS_DIR}/include")
+target_link_libraries(${PROJECT_NAME} TorchVision::TorchVision)
+
+
 
 if (MSVC)
-  file(GLOB TORCH_DLLS "${TORCH_INSTALL_PREFIX}/lib/*.dll")
+  file(GLOB TORCH_DLLS "${TORCH_INSTALL_PREFIX}/lib/*.dll" "${TORCH_VISION_DEPS_DIR}/bin/*.dll")
   add_custom_command(TARGET ${PROJECT_NAME}
                      POST_BUILD
                      COMMAND ${CMAKE_COMMAND} -E copy_if_different
                      ${TORCH_DLLS}
                      $<TARGET_FILE_DIR:${PROJECT_NAME}>)
+  
 endif (MSVC)
 
