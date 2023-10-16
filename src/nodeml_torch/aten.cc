@@ -257,6 +257,22 @@ namespace nodeml_torch
             }
         }
 
+        Napi::Value stack(const Napi::CallbackInfo &info)
+        {
+            try
+            {
+                auto env = info.Env();
+
+                auto tensors = utils::napiArrayToVector<torch::Tensor>(info[0].As<Napi::Array>());
+
+                return Tensor::FromTorchTensor(env, torch::stack(tensors, info.Length() >= 2 ? info[1].ToNumber().Int64Value() : 0i64));
+            }
+            catch (const std::exception &e)
+            {
+                throw Napi::Error::New(info.Env(), e.what());
+            }
+        }
+
         Napi::Value where(const Napi::CallbackInfo &info)
         {
 
@@ -313,6 +329,31 @@ namespace nodeml_torch
             }
         }
 
+        Napi::Value chunk(const Napi::CallbackInfo &info)
+        {
+            auto env = info.Env();
+            if (info.Length() >= 1 && info[0].IsArray())
+            {
+                auto input = Tensor::FromObject(info[0])->torchTensor;
+                auto chunks = info[1].ToNumber().Int64Value();
+
+                auto torchChunks = torch::chunk(input, chunks, info.Length() >= 2 ? info[1].ToNumber().Int64Value() : 0i64);
+
+                auto result = Napi::Array::New(env, torchChunks.size());
+
+                for (auto i = 0; i < result.Length(); i++)
+                {
+                    result.Set(uint32_t(i), Tensor::FromTorchTensor(env, torchChunks.at(i)));
+                }
+
+                return result;
+            }
+            else
+            {
+                throw Napi::Error::New(env, "Tensor shape is required");
+            }
+        }
+
         Napi::Object Init(Napi::Env env, Napi::Object exports)
         {
             exports.Set("rand", Napi::Function::New(env, rand));
@@ -327,6 +368,7 @@ namespace nodeml_torch
             exports.Set("where", Napi::Function::New(env, where));
             exports.Set("empty", Napi::Function::New(env, empty));
             exports.Set("emptyLike", Napi::Function::New(env, emptyLike));
+            exports.Set("chunk", Napi::Function::New(env, chunk));
             return exports;
         }
     }

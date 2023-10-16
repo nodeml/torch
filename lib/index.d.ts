@@ -130,6 +130,8 @@ export declare class Tensor<TensorType extends TensorTypes = TensorTypes> {
   ) => Tensor<
     TensorType extends typeof types.uint8 ? TensorType : typeof types.bool
   >;
+
+  clamp: (min: number, max: number) => Tensor<TensorType>;
 }
 
 export declare function tensor<T extends ArrayTypes = ArrayTypes>(
@@ -212,6 +214,15 @@ export namespace nn {
       tensor: Tensor<T>,
       size: number[]
     ): Tensor<T>;
+
+    declare function pad<T extends TensorTypes>(
+      tensor: Tensor<T>,
+      pad: [number, number]
+    ): Tensor<T>;
+    declare function pad<T extends TensorTypes>(
+      tensor: Tensor<T>,
+      pad: [number, number, number, number]
+    ): Tensor<T>;
   }
 }
 
@@ -220,7 +231,9 @@ export namespace jit {
     forward: (...args: Tensor[]) => Promise<OutputType>;
   }
 
-  declare function load<OutputType = Tensor>(path: string): Module<OutputType>;
+  declare function load<OutputType = Tensor>(
+    path: string
+  ): Promise<Module<OutputType>>;
 }
 
 export namespace vision {
@@ -230,5 +243,32 @@ export namespace vision {
       scores: Tensor<S>,
       iouThreshold: number
     ): Tensor<B>;
+  }
+
+  namespace io {
+    declare function readFile(filePath: string): Promise<Tensor<"uint8">>;
+    declare function writeFile(
+      data: Tensor<"uint8">,
+      filePath: string
+    ): Promise<void>;
+
+    declare function readImage(filePath: string): Promise<Tensor<"uint8">>;
+
+    // declare function encodePng(
+    //   data: Tensor<"uint8">,
+    //   compression: number
+    // ): Promise<Tensor<"uint8">>;
+    declare function encodeJpeg(
+      data: Tensor<"uint8">,
+      quality: number
+    ): Promise<Tensor<"uint8">>;
+
+    declare function decodeImage(
+      rawData: Tensor<"uint8">
+    ): Promise<Tensor<"uint8">>;
+    declare function decodePng(data: Tensor<"uint8">): Promise<Tensor<"uint8">>;
+    declare function decodeJpeg(
+      data: Tensor<"uint8">
+    ): Promise<Tensor<"uint8">>;
   }
 }

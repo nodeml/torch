@@ -26,9 +26,8 @@ namespace nodeml_torch
         {
         }
 
-        Napi::Object Module::FromTorchJitModule(const Napi::CallbackInfo &info, const torch::jit::Module &torchJitModule)
+        Napi::Object Module::FromTorchJitModule(Napi::Env env, const torch::jit::Module &torchJitModule)
         {
-            auto env = info.Env();
             try
             {
                 Napi::EscapableHandleScope scope(env);

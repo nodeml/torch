@@ -2,6 +2,7 @@
 #include <nodeml_torch/vision/vision.h>
 #include <torch/torch.h>
 #include <nodeml_torch/vision/ops.h>
+#include <nodeml_torch/vision/io.h>
 
 namespace nodeml_torch
 {
@@ -13,6 +14,7 @@ namespace nodeml_torch
             auto myExports = Napi::Object::New(env);
 
             ops::Init(env, myExports);
+            io::Init(env, myExports);
 
             exports.Set("vision", myExports);
 

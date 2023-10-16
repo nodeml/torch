@@ -1,9 +1,14 @@
 {
   "name": "@nodeml/torch",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "A libtorch binding for nodejs. Currently only supports cpu operations",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
+  "keywords": [
+    "torch",
+    "torchvision",
+    "tensor"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nodeml/torch.git"
@@ -11,13 +16,14 @@
   "scripts": {
     "start": "node ./test/test.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm run clean && npx tsc",
+    "build": "cmake-js rebuild",
+    "compile": "cmake-js compile",
     "watch": "npm run clean && npx tsc --watch",
     "pretty": "npx prettier --write .",
     "clean": "node ./scripts/clean.js",
-    "install": "cmake-js compile",
+    "install": "prebuild-install -r napi || npm run build",
     "installd": "cmake-js compile --debug",
-    "prebuild": "prebuild --backend cmake-js --include-regex \"\\.[nsd][oyl][dl]?[ie]?b?$\""
+    "prebuild": "prebuild --backend cmake-js --include-regex \"\\.[nsd][oyl][dl]?[ie]?b?$\" -r napi"
   },
   "author": "",
   "license": "ISC",
@@ -41,6 +47,11 @@
     "cmake-js": "^7.2.1",
     "node-addon-api": "^7.0.0",
     "prebuild": "^12.1.0",
-    "typescript": "^4.9.3"
+    "prebuild-install": "^7.1.1"
+  },
+  "binary": {
+    "napi_versions": [
+      7
+    ]
   }
 }

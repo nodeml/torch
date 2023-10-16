@@ -141,7 +141,9 @@ namespace nodeml_torch
                                  Tensor::InstanceMethod("argsort", &Tensor::Argsort),
                                  Tensor::InstanceMethod("view", &Tensor::View),
                                  Tensor::InstanceMethod("any", &Tensor::Any),
-                                 Tensor::InstanceMethod("max", &Tensor::Max)});
+                                 Tensor::InstanceMethod("max", &Tensor::Max),
+                                 Tensor::InstanceMethod("clamp", &Tensor::Clamp),
+                                 Tensor::InstanceMethod("sigmoid", &Tensor::Sigmoid)});
 
         constructor = Napi::Persistent(func);
         constructor.SuppressDestruct();
@@ -692,6 +694,34 @@ namespace nodeml_torch
             {
                 return Tensor::FromTorchTensor(env, torchTensor.argsort(info[0].As<Napi::Number>().Int64Value()));
             }
+        }
+        catch (const std::exception &e)
+        {
+            throw Napi::Error::New(env, e.what());
+        }
+    }
+
+    Napi::Value Tensor::Clamp(const Napi::CallbackInfo &info)
+    {
+        auto env = info.Env();
+        try
+        {
+
+            return Tensor::FromTorchTensor(env, torchTensor.clamp(info[0].As<Napi::Number>().Int64Value(), info[1].As<Napi::Number>().Int64Value()));
+        }
+        catch (const std::exception &e)
+        {
+            throw Napi::Error::New(env, e.what());
+        }
+    }
+
+    Napi::Value Tensor::Sigmoid(const Napi::CallbackInfo &info)
+    {
+        auto env = info.Env();
+        try
+        {
+
+            return Tensor::FromTorchTensor(env, torchTensor.sigmoid());
         }
         catch (const std::exception &e)
         {

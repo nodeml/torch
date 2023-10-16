@@ -11,6 +11,8 @@ namespace nodeml_torch
 
             Napi::Value interpolate(const Napi::CallbackInfo &info);
 
+            Napi::Value pad(const Napi::CallbackInfo &info);
+
             Napi::Object Init(Napi::Env env);
         }
     }

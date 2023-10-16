@@ -1,5 +1,6 @@
 #include <nodeml_torch/jit/jit.h>
 #include <torch/script.h>
+#include <nodeml_torch/FunctionWorker.h>
 #include <nodeml_torch/jit/Module.h>
 
 namespace nodeml_torch
@@ -18,7 +19,21 @@ namespace nodeml_torch
                     throw Napi::Error::New(env, "Path Must Be A String");
                 }
 
-                return Module::FromTorchJitModule(info, torch::jit::load(info[0].ToString().Utf8Value()));
+                auto modulePath = info[0].ToString().Utf8Value();
+
+                auto worker = new FunctionWorker<torch::jit::Module>(
+                    info.Env(),
+                    [=]() -> torch::jit::Module
+                    {
+                        return torch::jit::load(modulePath);
+                    },
+                    [=](Napi::Env env, torch::jit::Module value) -> Napi::Value
+                    {
+                        return Module::FromTorchJitModule(env, value);
+                    });
+
+                worker->Queue();
+                return worker->GetPromise();
             }
             catch (const std::exception &e)
             {
