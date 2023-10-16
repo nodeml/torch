@@ -96,3 +96,4 @@ projects/
 **/build/**
 deps/dynamic/*
 prebuilds/*
+*.torchscript
