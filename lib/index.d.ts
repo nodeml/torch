@@ -29,7 +29,7 @@ export const types = {
 } as const;
 
 export type TensorTypes = typeof types[keyof typeof types];
-
+export type InterpolationModes = 'nearest' | 'linear' | 'bilinear' | 'bicubic' | 'trilinear' | 'area' | 'nearest-exact'
 export type ArrayTypeToTensorType<T extends ArrayTypes> = T extends Float32Array
   ? typeof types.float
   : T extends Float64Array
@@ -216,7 +216,12 @@ export namespace nn {
   namespace functional {
     declare function interpolate<T extends TensorTypes>(
       tensor: Tensor<T>,
-      size: number[]
+      size: number[],
+      mode: InterpolationModes,
+      options?: {
+        alignCorners: boolean;
+        antiAlias: boolean;
+      }
     ): Tensor<T>;
 
     declare function pad<T extends TensorTypes>(

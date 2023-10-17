@@ -17,12 +17,55 @@ namespace nodeml_torch
                 try
                 {
                     auto tensor = nodeml_torch::Tensor::FromObject(info[0]);
+                    auto options = torch::nn::functional::InterpolateFuncOptions();
+                    options.size(utils::napiArrayToVector<int64_t>(info[1].As<Napi::Array>()));
+                    auto mode = info[2].ToString().Utf8Value();
 
+                    //'nearest' | 'linear' | 'bilinear' | 'bicubic' | 'trilinear' | 'area' | 'nearest-exact'
+                    if (mode == "nearest")
+                    {
+                        options.mode(torch::kNearest);
+                    }
+                    else if (mode == "linear")
+                    {
+                        options.mode(torch::kLinear);
+                    }
+                    else if (mode == "bilinear")
+                    {
+                        options.mode(torch::kBilinear);
+                    }
+                    else if (mode == "bicubic")
+                    {
+                        options.mode(torch::kBicubic);
+                    }
+                    else if (mode == "trilinear")
+                    {
+                        options.mode(torch::kTrilinear);
+                    }
+                    else if (mode == "area")
+                    {
+                        options.mode(torch::kArea);
+                    }
+                    else if (mode == "nearest-exact")
+                    {
+                        options.mode(torch::kNearestExact);
+                    }
+
+                    if (info.Length() >= 4 && info[3].IsObject())
+                    {
+                        auto extraOptions = info[3].ToObject();
+                        if (extraOptions.Has("alignCorners"))
+                        {
+                            options.align_corners(extraOptions.Get("alignCorners").ToBoolean().Value());
+                        }
+
+                        if (extraOptions.Has("antiAlias"))
+                        {
+                            options.antialias(extraOptions.Get("antiAlias").ToBoolean().Value());
+                        }
+                    }
                     return nodeml_torch::Tensor::FromTorchTensor(env,
-                                                                 torch::nn::functional::interpolate(tensor->torchTensor,
-                                                                                                    torch::nn::functional::InterpolateFuncOptions()
-                                                                                                        .size(utils::napiArrayToVector<int64_t>(info[1].As<Napi::Array>()))
-                                                                                                        .mode(torch::kNearest)));
+                                                                 torch::nn::functional::interpolate(tensor->torchTensor, options));
                 }
                 catch (const std::exception &e)
                 {
