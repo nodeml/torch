@@ -3,7 +3,7 @@ export type ArrayTypes =
   | Int32Array
   | Uint8Array
   | BigInt64Array
-  | boolean[];
+  | boolean[] | number[];
 
 export type MultiDim<T = number> = Array<T[] | MultiDim<T>>;
 
@@ -19,14 +19,14 @@ export type TorchIndexOperators =
   | boolean
   | Tensor;
 
-export const types = {
+export declare const types: {
   int32: "int32",
   double: "double",
   float: "float",
   uint8: "uint8",
   long: "long",
   bool: "bool",
-} as const;
+};
 
 export type TensorTypes = typeof types[keyof typeof types];
 export type InterpolationModes = 'nearest' | 'linear' | 'bilinear' | 'bicubic' | 'trilinear' | 'area' | 'nearest-exact'
@@ -42,22 +42,23 @@ export type ArrayTypeToTensorType<T extends ArrayTypes> = T extends Float32Array
   ? typeof types.long
   : T extends boolean[]
   ? typeof types.bool
+  : T extends number[] ? typeof types.float
   : TensorTypes;
 
 export type TensorTypeToArrayType<T extends TensorTypes> =
   T extends typeof types.float
-    ? Float32Array
-    : T extends typeof types.int32
-    ? Int32Array
-    : T extends typeof types.double
-    ? Float64Array
-    : T extends typeof types.uint8
-    ? Uint8Array
-    : T extends typeof types.long
-    ? BigInt64Array
-    : T extends typeof types.bool
-    ? boolean[]
-    : ArrayTypes;
+  ? Float32Array
+  : T extends typeof types.int32
+  ? Int32Array
+  : T extends typeof types.double
+  ? Float64Array
+  : T extends typeof types.uint8
+  ? Uint8Array
+  : T extends typeof types.long
+  ? BigInt64Array
+  : T extends typeof types.bool
+  ? boolean[]
+  : ArrayTypes;
 
 export type MultiDimType<T extends TensorTypes> = T extends typeof types.bool
   ? MultiDim<boolean>
@@ -78,7 +79,7 @@ export declare class Tensor<TensorType extends TensorTypes = TensorTypes> {
 
   static fromTypedArray(data: ArrayTypes, shape: number[]);
 
-  toMultiArray: () => MultiDimType<TensorType>;
+  // toMultiArray: () => MultiDimType<TensorType>;
 
   squeeze: (dim: number) => Tensor<TensorType>;
 
@@ -219,8 +220,8 @@ export namespace nn {
       size: number[],
       mode: InterpolationModes,
       options?: {
-        alignCorners: boolean;
-        antiAlias: boolean;
+        alignCorners?: boolean;
+        antiAlias?: boolean;
       }
     ): Tensor<T>;
 

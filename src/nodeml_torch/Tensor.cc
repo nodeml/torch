@@ -385,6 +385,11 @@ namespace nodeml_torch
             return Tensor::FromTorchTensor(env, torchTensor.toType(torch::ScalarType::Byte));
         }
 
+        else if (targetType == torchBooleanType)
+        {
+            return Tensor::FromTorchTensor(env, torchTensor.toType(torch::ScalarType::Bool));
+        }
+
         throw Napi::Error::New(env, "Unknown Type");
     }
 
@@ -402,10 +407,12 @@ namespace nodeml_torch
             return Napi::String::New(env, torchDoubleType);
         case torch::ScalarType::Int:
             return Napi::String::New(env, torchInt32Type);
-        case torch::ScalarType::Byte:
-            return Napi::String::New(env, torchUint8Type);
         case torch::ScalarType::Long:
             return Napi::String::New(env, torchLongType);
+        case torch::ScalarType::Byte:
+            return Napi::String::New(env, torchUint8Type);
+        case torch::ScalarType::Bool:
+            return Napi::String::New(env, torchBooleanType);
         default:
             throw Napi::TypeError::New(env, "Unsupported type");
         }

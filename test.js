@@ -41,5 +41,5 @@ const torch = require("./lib");
 // );
 
 // console.log(img.shape, img.dtype);
-torch.jit.load("detection.torchscript").then((a) => console.log("LOADED", a));
-console.log("IF YOU SEE THIS WE AINT BLOCKED");
+const x = torch.tensor([true,false,true])
+console.log(x.dtype,x.get([null,2]).toArray())
