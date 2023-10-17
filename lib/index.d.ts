@@ -132,6 +132,8 @@ export declare class Tensor<TensorType extends TensorTypes = TensorTypes> {
   >;
 
   clamp: (min: number, max: number) => Tensor<TensorType>;
+
+  sigmoid: () => Tensor<TensorType>;
 }
 
 export declare function tensor<T extends ArrayTypes = ArrayTypes>(
@@ -198,6 +200,8 @@ export declare function cat<T extends TensorTypes = typeof types.float>(
 ): Tensor<T>;
 
 export declare function where(condition: Tensor<typeof types.bool>): Tensor[];
+
+export declare function chunk<T extends TensorTypes = typeof types.float>(tensor: Tensor<T>, chunks: number, dim?: number): Tensor<T>[];
 
 export declare function empty<T extends TensorTypes = typeof types.float>(
   shape: number[],

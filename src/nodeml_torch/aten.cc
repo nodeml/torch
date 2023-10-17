@@ -337,7 +337,7 @@ namespace nodeml_torch
                 auto input = Tensor::FromObject(info[0])->torchTensor;
                 auto chunks = info[1].ToNumber().Int64Value();
 
-                auto torchChunks = torch::chunk(input, chunks, info.Length() >= 2 ? info[1].ToNumber().Int64Value() : 0i64);
+                auto torchChunks = torch::chunk(input, chunks, info.Length() >= 3 ? info[2].ToNumber().Int64Value() : 0i64);
 
                 auto result = Napi::Array::New(env, torchChunks.size());
 

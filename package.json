@@ -1,6 +1,6 @@
 {
   "name": "@nodeml/torch",
-  "version": "1.2.0",
+  "version": "1.4.0",
   "description": "A libtorch binding for nodejs. Currently only supports cpu operations",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
@@ -18,7 +18,6 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "cmake-js rebuild",
     "compile": "cmake-js compile",
-    "watch": "npm run clean && npx tsc --watch",
     "pretty": "npx prettier --write .",
     "clean": "node ./scripts/clean.js",
     "install": "prebuild-install -r napi || npm run build",
