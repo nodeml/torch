@@ -219,7 +219,7 @@ namespace nodeml_torch
         Napi::Value zeros(const Napi::CallbackInfo &info)
         {
             auto env = info.Env();
-            if (info.Length() >= 1 && info[0].IsArray())
+            try 
             {
                 auto shape = utils::napiArrayToVector<std::int64_t>(info[0].As<Napi::Array>());
                 c10::ScalarType dtype;
@@ -235,9 +235,9 @@ namespace nodeml_torch
 
                 return Tensor::FromTorchTensor(env, torch::zeros(shape).toType(dtype));
             }
-            else
+            catch (const std::exception &e)
             {
-                throw Napi::Error::New(env, "Tensor shape is required");
+                throw Napi::Error::New(info.Env(), e.what());
             }
         }
 
@@ -293,7 +293,7 @@ namespace nodeml_torch
         Napi::Value empty(const Napi::CallbackInfo &info)
         {
             auto env = info.Env();
-            if (info.Length() >= 1 && info[0].IsArray())
+            try
             {
                 auto shape = utils::napiArrayToVector<std::int64_t>(info[0].As<Napi::Array>());
                 c10::ScalarType dtype;
@@ -309,9 +309,9 @@ namespace nodeml_torch
 
                 return Tensor::FromTorchTensor(env, torch::empty(shape).toType(dtype));
             }
-            else
+            catch (const std::exception &e)
             {
-                throw Napi::Error::New(env, "Tensor shape is required");
+                throw Napi::Error::New(info.Env(), e.what());
             }
         }
 
@@ -332,7 +332,7 @@ namespace nodeml_torch
         Napi::Value chunk(const Napi::CallbackInfo &info)
         {
             auto env = info.Env();
-            if (info.Length() >= 1 && info[0].IsArray())
+            try
             {
                 auto input = Tensor::FromObject(info[0])->torchTensor;
                 auto chunks = info[1].ToNumber().Int64Value();
@@ -348,9 +348,9 @@ namespace nodeml_torch
 
                 return result;
             }
-            else
+            catch (const std::exception &e)
             {
-                throw Napi::Error::New(env, "Tensor shape is required");
+                throw Napi::Error::New(info.Env(), e.what());
             }
         }
 
