@@ -103,9 +103,8 @@ export declare class Tensor<TensorType extends TensorTypes = TensorTypes> {
 
   get: (...operators: TorchIndexOperators[]) => Tensor<TensorType>;
 
-  set: <T extends TensorTypes = TensorType>(
-    a: Tensor<T>,
-    ...operators: TorchIndexOperators[]
+  set: <T extends TensorTypes = TensorType>(value: Tensor<T>,
+    ...ops: [TorchIndexOperators,...TorchIndexOperators[]]
   ) => void;
 
   clone: () => Tensor<TensorType>;
@@ -135,6 +134,16 @@ export declare class Tensor<TensorType extends TensorTypes = TensorTypes> {
   clamp: (min: number, max: number) => Tensor<TensorType>;
 
   sigmoid: () => Tensor<TensorType>;
+
+  cuda: () => Tensor<TensorType>;
+
+  cpu: () => Tensor<TensorType>;
+
+  detach: () => Tensor<TensorType>;
+
+  backward: () => void;
+
+  *[Symbol.iterator](): IterableIterator<Tensor<TensorType>>;
 }
 
 export declare function tensor<T extends ArrayTypes = ArrayTypes>(
@@ -213,6 +222,8 @@ export declare function emptyLike<T extends TensorTypes>(
   tensor: Tensor<T>
 ): Tensor<T>;
 
+export declare function runBlockingAsync<Result = unknown, Args extends unknown[]>(func: (...args: Args) => Result,...args: Args): Promise<Result>
+
 export namespace nn {
   namespace functional {
     declare function interpolate<T extends TensorTypes>(
@@ -281,4 +292,10 @@ export namespace vision {
       data: Tensor<"uint8">
     ): Promise<Tensor<"uint8">>;
   }
+
+}
+
+export namespace cuda {
+  declare function isAvailable(): boolean;
+  declare function deviceCount(): number;
 }

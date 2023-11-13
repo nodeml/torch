@@ -3,11 +3,11 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**",
                 "${workspaceFolder}/src/**",
-                "${APPDATA}/../Local/node-gyp/Cache/**/include/node",
-                "${workspaceFolder}/deps/dynamic/libtorch/include",
-                "${workspaceFolder}/deps/dynamic/torchvision/include",
+                "${APPDATA}/../Local/node-gyp/Cache/**/include/node/**",
+                "${workspaceFolder}/deps/dynamic/libtorch/include/**",
+                "${workspaceFolder}/deps/dynamic/torchvision/include/**",
+                "${workspaceFolder}/node_modules/node-addon-api"
             ],
             "defines": [
                 "_DEBUG",

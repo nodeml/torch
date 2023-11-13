@@ -1,6 +1,8 @@
 #include <nodeml_torch/utils.h>
 #include <nodeml_torch/types.h>
+#include <nodeml_torch/FunctionWorker.h>
 #include <nodeml_torch/Tensor.h>
+#include "utils.h"
 
 namespace nodeml_torch
 {
@@ -264,11 +266,15 @@ namespace nodeml_torch
             throw Napi::Error::New(env, "Failed To Parse Tensor Index");
         }
 
+        
         std::vector<torch::indexing::TensorIndex> napiArrayToTorchIndex(const Napi::Array &arr)
         {
             return std::vector<torch::indexing::TensorIndex>();
         }
 
-        Napi::Object Init(Napi::Env env, Napi::Object exports) { return exports; }
+        Napi::Object Init(Napi::Env env, Napi::Object exports)
+        {
+            return exports;
+        }
     }
 }

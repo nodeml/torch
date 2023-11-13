@@ -52,4 +52,51 @@ namespace nodeml_torch
     {
         return promise.Promise();
     }
+
+    template <typename T>
+    class FunctionWorkerSimple : public Napi::AsyncWorker
+    {
+    public:
+        FunctionWorkerSimple(Napi::Env env, std::function<T()> _workFunction);
+        ~FunctionWorkerSimple() {}
+        void Execute() override;
+        void OnOK() override;
+        void OnError(const Napi::Error &e) override;
+        Napi::Promise GetPromise();
+
+    private:
+        Napi::Promise::Deferred promise;
+        std::function<T()> workFunction;
+        T result;
+    };
+
+    template <typename T>
+    FunctionWorkerSimple<T>::FunctionWorkerSimple(Napi::Env env, std::function<T()> _workFunction)
+        : promise(Napi::Promise::Deferred::New(env)), workFunction(_workFunction), AsyncWorker(env) {}
+
+    template <typename T>
+    void FunctionWorkerSimple<T>::Execute()
+    {
+        result = workFunction();
+    }
+
+    template <typename T>
+    void FunctionWorkerSimple<T>::OnOK()
+    {
+        Napi::EscapableHandleScope scope(Env());
+
+        promise.Resolve(scope.Escape(result));
+    }
+
+    template <typename T>
+    void FunctionWorkerSimple<T>::OnError(const Napi::Error &e)
+    {
+        promise.Reject(e.Value());
+    }
+
+    template <typename T>
+    Napi::Promise FunctionWorkerSimple<T>::GetPromise()
+    {
+        return promise.Promise();
+    }
 }

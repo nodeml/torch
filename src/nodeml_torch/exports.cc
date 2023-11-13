@@ -6,6 +6,7 @@
 #include <nodeml_torch/nn/nn.h>
 #include <nodeml_torch/jit/jit.h>
 #include <nodeml_torch/vision/vision.h>
+#include <nodeml_torch/cuda/cuda.h>
 
 Napi::Object InitModule(Napi::Env env, Napi::Object exports)
 {
@@ -16,7 +17,7 @@ Napi::Object InitModule(Napi::Env env, Napi::Object exports)
     nodeml_torch::nn::Init(env, exports);
     nodeml_torch::jit::Init(env, exports);
     nodeml_torch::vision::Init(env, exports);
-
+    nodeml_torch::cuda::Init(env,exports);
     return exports;
 }
 

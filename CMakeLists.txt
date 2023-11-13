@@ -4,12 +4,22 @@ project(nodeml_torch VERSION 1.0)
 
 set(CMAKE_CXX_STANDARD 17)
 
+option(WITH_CUDA "Enable CUDA support" OFF)
+
 add_definitions(-DNAPI_VERSION=4)
 
 include_directories(${CMAKE_JS_INC})
 
+find_package(PNG REQUIRED)
+find_package(JPEG REQUIRED)
+
 set(PYTORCH_VERSION 2.1.0)
 set(PYTORCH_VISION_VERSION 0.16.0)
+if(WITH_CUDA)
+  set(TORCH_DEVICE_NAME "cuda")
+else()
+  set(TORCH_DEVICE_NAME "cpu")
+endif()
 
 include(${CMAKE_SOURCE_DIR}/utils.cmake)
 
@@ -31,8 +41,6 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_JS_INC})
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/src)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
-
 # Include N-API wrappers
 IncludeNapi(${PROJECT_NAME})
 
@@ -49,7 +57,9 @@ endif()
 set(TORCH_DEPS_DIR ${CMAKE_SOURCE_DIR}/deps/dynamic/libtorch)
 list(APPEND CMAKE_PREFIX_PATH ${TORCH_DEPS_DIR})
 list(APPEND CMAKE_PREFIX_PATH "${TORCH_DEPS_DIR}/share/cmake/Torch")
-DownloadTorch(${PYTORCH_VERSION} "${CMAKE_SOURCE_DIR}/deps/dynamic")
+
+DownloadTorch(${PYTORCH_VERSION} ${WITH_CUDA} "${CMAKE_SOURCE_DIR}/deps/dynamic")
+
 find_package(Torch REQUIRED)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
 target_link_libraries(${PROJECT_NAME} ${TORCH_LIBRARIES})
@@ -58,30 +68,24 @@ target_link_libraries(${PROJECT_NAME} ${TORCH_LIBRARIES})
 set(TORCH_VISION_DEPS_DIR ${CMAKE_SOURCE_DIR}/deps/dynamic/torchvision)
 list(APPEND CMAKE_PREFIX_PATH ${TORCH_VISION_DEPS_DIR})
 list(APPEND CMAKE_PREFIX_PATH "${TORCH_VISION_DEPS_DIR}/share/cmake/TorchVision")
-if(NOT EXISTS ${TORCH_VISION_DEPS_DIR})
-  execute_process(
-    COMMAND git clone --depth 1 --branch v${PYTORCH_VISION_VERSION} https://github.com/pytorch/vision
-  )
-  execute_process(
-    COMMAND ${CMAKE_COMMAND} -DCMAKE_BUILD_TYPE=Release -DUSE_PYTHON=OFF -DWITH_PNG=ON -DWITH_JPEG=ON -DCMAKE_PREFIX_PATH=${TORCH_DEPS_DIR} -S "${CMAKE_CURRENT_BINARY_DIR}/vision/" -B "${CMAKE_CURRENT_BINARY_DIR}/vision/build/"
-  )
-  execute_process(
-    COMMAND ${CMAKE_COMMAND} --build "${CMAKE_CURRENT_BINARY_DIR}/vision/build" --config Release
-  )
-  execute_process(
-    COMMAND ${CMAKE_COMMAND} --install "${CMAKE_CURRENT_BINARY_DIR}/vision/build" --prefix ${TORCH_VISION_DEPS_DIR}
-  )
 
-  file(REMOVE_RECURSE ${CMAKE_SOURCE_DIR}/vision)
-endif()
+#Download prebuilt torchvision
+DownloadBuiltDep(torchvision ${PYTORCH_VERSION}-${PYTORCH_VISION_VERSION}-${TORCH_DEVICE_NAME} ${CMAKE_SOURCE_DIR}/deps/dynamic)
+
 find_package(TorchVision REQUIRED)
 target_include_directories(${PROJECT_NAME} PRIVATE "${TORCH_VISION_DEPS_DIR}/include")
 target_link_libraries(${PROJECT_NAME} TorchVision::TorchVision)
 
-
+message(STATUS "${TORCH_INSTALL_PREFIX} ${TORCHVISION_DIR}")
 
 if (MSVC)
-  file(GLOB TORCH_DLLS "${TORCH_INSTALL_PREFIX}/lib/*.dll" "${TORCH_VISION_DEPS_DIR}/bin/*.dll")
+  file(GLOB TORCH_DLLS 
+    "${TORCH_INSTALL_PREFIX}/lib/*"
+    "${TORCH_INSTALL_PREFIX}/lib/*" 
+    "${TORCH_VISION_DEPS_DIR}/lib/*"  
+    "${TORCH_VISION_DEPS_DIR}/bin/*"
+    )
+  # message(STATUS "COPYING ${TORCH_DLLS}")
   add_custom_command(TARGET ${PROJECT_NAME}
                      POST_BUILD
                      COMMAND ${CMAKE_COMMAND} -E copy_if_different

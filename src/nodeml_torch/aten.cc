@@ -40,14 +40,10 @@ namespace nodeml_torch
             auto env = info.Env();
             auto dtypeIndex = info.Length() - 1;
 
-            if (dtypeIndex <= 0)
-            {
-                throw Napi::Error::New(env, "Missing Arguments");
-            }
 
             c10::ScalarType dtype;
 
-            if (!info[dtypeIndex].IsNumber())
+            if (dtypeIndex != 0 && !info[dtypeIndex].IsNumber())
             {
                 auto type = info[dtypeIndex].As<Napi::String>().Utf8Value();
                 dtype = utils::stringToScalarType(type);

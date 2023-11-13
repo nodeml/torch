@@ -7,13 +7,13 @@ namespace nodeml_torch
     namespace jit
     {
 
-        Napi::FunctionReference Module::constructor;
+        Napi::FunctionReference JitModule::constructor;
 
-        Napi::Object Module::Init(Napi::Env env, Napi::Object exports)
+        Napi::Object JitModule::Init(Napi::Env env, Napi::Object exports)
         {
             auto func = DefineClass(env, "Module",
                                     {
-                                        Module::InstanceMethod("forward", &Module::Forward),
+                                        JitModule::InstanceMethod("forward", &JitModule::Forward),
                                     });
 
             constructor = Napi::Persistent(func);
@@ -22,17 +22,17 @@ namespace nodeml_torch
             return exports;
         }
 
-        Module::Module(const Napi::CallbackInfo &info) : ObjectWrap(info)
+        JitModule::JitModule(const Napi::CallbackInfo &info) : ObjectWrap(info)
         {
         }
 
-        Napi::Object Module::FromTorchJitModule(Napi::Env env, const torch::jit::Module &torchJitModule)
+        Napi::Object JitModule::FromTorchJitModule(Napi::Env env, const torch::jit::Module &torchJitModule)
         {
             try
             {
                 Napi::EscapableHandleScope scope(env);
-                auto newModule = Module::constructor.New({});
-                Napi::ObjectWrap<Module>::Unwrap(newModule)->torchModule = torchJitModule;
+                auto newModule = JitModule::constructor.New({});
+                Napi::ObjectWrap<JitModule>::Unwrap(newModule)->torchModule = torchJitModule;
                 return scope.Escape(newModule).ToObject();
             }
             catch (const std::exception &e)
@@ -42,7 +42,7 @@ namespace nodeml_torch
 
             return Napi::Object();
         }
-        Napi::Value Module::Forward(const Napi::CallbackInfo &info)
+        Napi::Value JitModule::Forward(const Napi::CallbackInfo &info)
         {
             try
             {
@@ -79,7 +79,7 @@ namespace nodeml_torch
             }
         }
 
-        Napi::Value Module::Eval(const Napi::CallbackInfo &info)
+        Napi::Value JitModule::Eval(const Napi::CallbackInfo &info)
         {
             try
             {
@@ -93,11 +93,11 @@ namespace nodeml_torch
             return Napi::Value();
         }
 
-        Napi::Value Module::toString(const Napi::CallbackInfo &info)
+        Napi::Value JitModule::toString(const Napi::CallbackInfo &info)
         {
             return Napi::Value();
         }
-        Napi::Value Module::IValueToJSType(Napi::Env env, const c10::IValue &iValue)
+        Napi::Value JitModule::IValueToJSType(Napi::Env env, const c10::IValue &iValue)
         {
             // From https://github.com/arition/torch-js/blob/c94aa01ee2a45921f2cb461c5b0b3e0323f3fc9d/src/ScriptModule.cc
             Napi::EscapableHandleScope scope(env);
@@ -155,7 +155,7 @@ namespace nodeml_torch
             }
             throw Napi::Error::New(env, "Unsupported output type from ScriptModule");
         }
-        c10::IValue Module::JSTypeToIValue(Napi::Env env, const Napi::Value &jsValue)
+        c10::IValue JitModule::JSTypeToIValue(Napi::Env env, const Napi::Value &jsValue)
         {
             // From https://github.com/arition/torch-js/blob/c94aa01ee2a45921f2cb461c5b0b3e0323f3fc9d/src/ScriptModule.cc
             Napi::HandleScope scope(env);
@@ -203,3 +203,5 @@ namespace nodeml_torch
         }
     }
 }
+
+

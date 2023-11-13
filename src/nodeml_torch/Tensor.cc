@@ -143,7 +143,8 @@ namespace nodeml_torch
                                  Tensor::InstanceMethod("any", &Tensor::Any),
                                  Tensor::InstanceMethod("max", &Tensor::Max),
                                  Tensor::InstanceMethod("clamp", &Tensor::Clamp),
-                                 Tensor::InstanceMethod("sigmoid", &Tensor::Sigmoid)});
+                                 Tensor::InstanceMethod("sigmoid", &Tensor::Sigmoid), Tensor::InstanceMethod("cpu", &Tensor::Cpu),
+                                 Tensor::InstanceMethod("cuda", &Tensor::Cuda), Tensor::InstanceMethod("detach", &Tensor::Detach), Tensor::InstanceMethod("backward", &Tensor::Backward)});
 
         constructor = Napi::Persistent(func);
         constructor.SuppressDestruct();
@@ -729,6 +730,62 @@ namespace nodeml_torch
         {
 
             return Tensor::FromTorchTensor(env, torchTensor.sigmoid());
+        }
+        catch (const std::exception &e)
+        {
+            throw Napi::Error::New(env, e.what());
+        }
+    }
+
+    Napi::Value Tensor::Cuda(const Napi::CallbackInfo &info)
+    {
+        auto env = info.Env();
+        try
+        {
+
+            return Tensor::FromTorchTensor(env, torchTensor.cuda());
+        }
+        catch (const std::exception &e)
+        {
+            throw Napi::Error::New(env, e.what());
+        }
+    }
+
+    Napi::Value Tensor::Cpu(const Napi::CallbackInfo &info)
+    {
+        auto env = info.Env();
+        try
+        {
+
+            return Tensor::FromTorchTensor(env, torchTensor.cpu());
+        }
+        catch (const std::exception &e)
+        {
+            throw Napi::Error::New(env, e.what());
+        }
+    }
+
+    Napi::Value Tensor::Detach(const Napi::CallbackInfo &info)
+    {
+        auto env = info.Env();
+        try
+        {
+            return Tensor::FromTorchTensor(env, torchTensor.detach());
+        }
+        catch (const std::exception &e)
+        {
+            throw Napi::Error::New(env, e.what());
+        }
+    }
+
+    Napi::Value Tensor::Backward(const Napi::CallbackInfo &info)
+    {
+        auto env = info.Env();
+        try
+        {
+            torchTensor.backward();
+
+            return Napi::Value();
         }
         catch (const std::exception &e)
         {

@@ -29,7 +29,7 @@ namespace nodeml_torch
                     },
                     [=](Napi::Env env, torch::jit::Module value) -> Napi::Value
                     {
-                        return Module::FromTorchJitModule(env, value);
+                        return JitModule::FromTorchJitModule(env, value);
                     });
 
                 worker->Queue();
@@ -45,7 +45,7 @@ namespace nodeml_torch
         {
             auto myExports = Napi::Object::New(env);
 
-            Module::Init(env, myExports);
+            JitModule::Init(env, myExports);
 
             myExports.Set("load", Napi::Function::New(env, load));
 

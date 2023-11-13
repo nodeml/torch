@@ -82,6 +82,14 @@ namespace nodeml_torch
 
         Napi::Value Sigmoid(const Napi::CallbackInfo &info);
 
+        Napi::Value Cuda(const Napi::CallbackInfo &info);
+
+        Napi::Value Cpu(const Napi::CallbackInfo &info);
+
+        Napi::Value Detach(const Napi::CallbackInfo &info);
+
+        Napi::Value Backward(const Napi::CallbackInfo &info);
+
         static Napi::Function GetClass(Napi::Env env);
 
         Napi::Value toString(const Napi::CallbackInfo &info);

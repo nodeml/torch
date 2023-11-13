@@ -6,6 +6,7 @@ namespace nodeml_torch
 {
     namespace utils
     {
+        
         template <typename T>
         std::vector<T> napiArrayToVector(const Napi::Array &arr, int stopIndex = -1);
 

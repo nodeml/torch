@@ -10,7 +10,7 @@ namespace nodeml_torch
 {
     namespace jit
     {
-        class Module : public Napi::ObjectWrap<Module>
+        class JitModule : public Napi::ObjectWrap<JitModule>
         {
 
         public:
@@ -20,7 +20,7 @@ namespace nodeml_torch
 
             static Napi::Object Init(Napi::Env env, Napi::Object exports);
 
-            Module(const Napi::CallbackInfo &info);
+            JitModule(const Napi::CallbackInfo &info);
 
             static Napi::Object FromTorchJitModule(Napi::Env env, const torch::jit::Module &torchJitModule);
 
