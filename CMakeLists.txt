@@ -54,26 +54,26 @@ if(MSVC AND CMAKE_JS_NODELIB_DEF AND CMAKE_JS_NODELIB_TARGET)
 endif()
 
 # Torch
-set(TORCH_DEPS_DIR ${CMAKE_SOURCE_DIR}/deps/dynamic/libtorch)
+set(TORCH_DEPS_DIR ${CMAKE_SOURCE_DIR}/deps/libtorch)
 list(APPEND CMAKE_PREFIX_PATH ${TORCH_DEPS_DIR})
-list(APPEND CMAKE_PREFIX_PATH "${TORCH_DEPS_DIR}/share/cmake/Torch")
+list(APPEND CMAKE_PREFIX_PATH ${TORCH_DEPS_DIR}/share/cmake/Torch)
 
-DownloadTorch(${PYTORCH_VERSION} ${WITH_CUDA} "${CMAKE_SOURCE_DIR}/deps/dynamic")
+DownloadTorch(${PYTORCH_VERSION} ${WITH_CUDA} ${CMAKE_SOURCE_DIR}/deps)
 
 find_package(Torch REQUIRED)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
 target_link_libraries(${PROJECT_NAME} ${TORCH_LIBRARIES})
 
 # Torchvision
-set(TORCH_VISION_DEPS_DIR ${CMAKE_SOURCE_DIR}/deps/dynamic/torchvision)
+set(TORCH_VISION_DEPS_DIR ${CMAKE_SOURCE_DIR}/deps/torchvision)
 list(APPEND CMAKE_PREFIX_PATH ${TORCH_VISION_DEPS_DIR})
-list(APPEND CMAKE_PREFIX_PATH "${TORCH_VISION_DEPS_DIR}/share/cmake/TorchVision")
+list(APPEND CMAKE_PREFIX_PATH ${TORCH_VISION_DEPS_DIR}/share/cmake/TorchVision)
 
 #Download prebuilt torchvision
-DownloadBuiltDep(torchvision ${PYTORCH_VERSION}-${PYTORCH_VISION_VERSION}-${TORCH_DEVICE_NAME} ${CMAKE_SOURCE_DIR}/deps/dynamic)
+BuildTorchVision(${PYTORCH_VISION_VERSION} ${CMAKE_SOURCE_DIR}/deps/)
 
 find_package(TorchVision REQUIRED)
-target_include_directories(${PROJECT_NAME} PRIVATE "${TORCH_VISION_DEPS_DIR}/include")
+target_include_directories(${PROJECT_NAME} PRIVATE ${TORCH_VISION_DEPS_DIR}/include)
 target_link_libraries(${PROJECT_NAME} TorchVision::TorchVision)
 
 message(STATUS "${TORCH_INSTALL_PREFIX} ${TORCHVISION_DIR}")

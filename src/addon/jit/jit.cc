@@ -1,7 +1,7 @@
-#include <nodeml_torch/jit/jit.h>
+#include <addon/jit/jit.h>
 #include <torch/script.h>
-#include <nodeml_torch/FunctionWorker.h>
-#include <nodeml_torch/jit/Module.h>
+#include <addon/FunctionWorker.h>
+#include <addon/jit/Module.h>
 
 namespace nodeml_torch
 {

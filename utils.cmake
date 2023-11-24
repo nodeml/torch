@@ -39,17 +39,25 @@ macro(IncludeNapi project_name)
     add_definitions(-DNAPI_VERSION=3)
 endmacro()
 
-function(DownloadBuiltDep DEPENDENCY VERSION DESTINATION)
-  if(WIN32)
-    set(PLATFORM win)
-  else()
-    set(PLATFORM linux)
-  endif()
-  if(NOT EXISTS ${DESTINATION}/${DEPENDENCY})
-    file(DOWNLOAD https://github.com/nodeml/deps/releases/download/${DEPENDENCY}-${PLATFORM}-${VERSION}/${DEPENDENCY}.zip ${CMAKE_CURRENT_SOURCE_DIR}/${DEPENDENCY}.zip SHOW_PROGRESS)
-    message(STATUS "Extracting")
-    file(ARCHIVE_EXTRACT INPUT ${CMAKE_CURRENT_SOURCE_DIR}/${DEPENDENCY}.zip DESTINATION ${DESTINATION})
-    message(STATUS "Done Extracting")
-    file(REMOVE ${CMAKE_CURRENT_SOURCE_DIR}/${DEPENDENCY}.zip)
+function(BuildTorchVision VERSION DESTINATION)
+  if(NOT EXISTS ${DESTINATION}/torchvision)
+    set(CLONED_DIR ${CMAKE_CURRENT_BINARY_DIR}/vision)
+
+    execute_process(
+      COMMAND git clone --depth 1 --branch v${VERSION} https://github.com/pytorch/vision ${CLONED_DIR}
+    )
+
+
+    execute_process(
+      COMMAND ${CMAKE_COMMAND} -DCMAKE_BUILD_TYPE=Release -DUSE_PYTHON=OFF -DWITH_CUDA=${WITH_CUDA} -DWITH_PNG=ON -DWITH_JPEG=ON -DCMAKE_PREFIX_PATH=${TORCH_DEPS_DIR} -S ${CLONED_DIR} -B ${CLONED_DIR}/build/
+    )
+
+    execute_process(
+      COMMAND ${CMAKE_COMMAND} --build ${CLONED_DIR}/build --config Release
+    )
+
+    execute_process(
+      COMMAND ${CMAKE_COMMAND} --install ${CLONED_DIR}/build --prefix ${DESTINATION}/torchvision
+    )
   endif()
 endfunction()

@@ -1,5 +1,5 @@
 #include <napi.h>
-#include <nodeml_torch/cuda/cuda.h>
+#include <addon/cuda/cuda.h>
 #include <torch/torch.h>
 #include "cuda.h"
 

@@ -1,6 +1,6 @@
 #include <napi.h>
-#include <nodeml_torch/Tensor.h>
-#include <nodeml_torch/vision/ops.h>
+#include <addon/Tensor.h>
+#include <addon/vision/ops.h>
 #include <torch/torch.h>
 #include <torchvision/vision.h>
 #include <torchvision/ops/ops.h>

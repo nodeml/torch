@@ -1,9 +1,9 @@
 #include <napi.h>
-#include <nodeml_torch/Tensor.h>
-#include <nodeml_torch/vision/ops.h>
+#include <addon/Tensor.h>
+#include <addon/vision/ops.h>
 #include <torch/torch.h>
 #include <torchvision/vision.h>
-#include <nodeml_torch/FunctionWorker.h>
+#include <addon/FunctionWorker.h>
 #include <torchvision/io/image/image.h>
 #include "io.h"
 

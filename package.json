@@ -16,7 +16,8 @@
   "scripts": {
     "start": "node ./test.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "cmake-js rebuild",
+    "cmake:rebuild": "cmake-js rebuild",
+    "cmake:build": "cmake-js build",
     "compile": "cmake-js compile",
     "pretty": "npx prettier --write .",
     "clean": "node ./scripts/clean.js",

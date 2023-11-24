@@ -1,8 +1,8 @@
 #include <napi.h>
-#include <nodeml_torch/vision/vision.h>
+#include <addon/vision/vision.h>
 #include <torch/torch.h>
-#include <nodeml_torch/vision/ops.h>
-#include <nodeml_torch/vision/io.h>
+#include <addon/vision/ops.h>
+#include <addon/vision/io.h>
 
 namespace nodeml_torch
 {

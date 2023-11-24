@@ -1,6 +1,6 @@
-#include <nodeml_torch/jit/Module.h>
-#include <nodeml_torch/FunctionWorker.h>
-#include <nodeml_torch/Tensor.h>
+#include <addon/jit/Module.h>
+#include <addon/FunctionWorker.h>
+#include <addon/Tensor.h>
 #include "Module.h"
 namespace nodeml_torch
 {

@@ -1,12 +1,12 @@
 #include <napi.h>
-#include <nodeml_torch/Tensor.h>
-#include <nodeml_torch/utils.h>
-#include <nodeml_torch/types.h>
-#include <nodeml_torch/aten.h>
-#include <nodeml_torch/nn/nn.h>
-#include <nodeml_torch/jit/jit.h>
-#include <nodeml_torch/vision/vision.h>
-#include <nodeml_torch/cuda/cuda.h>
+#include <addon/Tensor.h>
+#include <addon/utils.h>
+#include <addon/types.h>
+#include <addon/aten.h>
+#include <addon/nn/nn.h>
+#include <addon/jit/jit.h>
+#include <addon/vision/vision.h>
+#include <addon/cuda/cuda.h>
 
 Napi::Object InitModule(Napi::Env env, Napi::Object exports)
 {

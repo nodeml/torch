@@ -94,6 +94,6 @@ projects/
 *.pyc
 *.onnx
 **/build/**
-deps/dynamic/*
+deps/*
 prebuilds/*
 *.torchscript

@@ -1,5 +1,5 @@
-#include <nodeml_torch/nn/nn.h>
-#include <nodeml_torch/nn/functional.h>
+#include <addon/nn/nn.h>
+#include <addon/nn/functional.h>
 
 namespace nodeml_torch
 {

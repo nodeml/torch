@@ -1,7 +1,7 @@
-#include <nodeml_torch/utils.h>
-#include <nodeml_torch/types.h>
-#include <nodeml_torch/FunctionWorker.h>
-#include <nodeml_torch/Tensor.h>
+#include <addon/utils.h>
+#include <addon/types.h>
+#include <addon/FunctionWorker.h>
+#include <addon/Tensor.h>
 #include "utils.h"
 
 namespace nodeml_torch
