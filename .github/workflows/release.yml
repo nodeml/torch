@@ -39,11 +39,11 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-          registry-url: https://npm.pkg.github.com/
+          registry-url: https://registry.npmjs.org/
       - run: |
-          echo "@tarehimself:registry=https://npm.pkg.github.com" >> .npmrc
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.ORG_NPM_TOKEN }}" >> .npmrc
-      - run: npm publish
+          echo "_auth=${{ secrets.ORG_NPM_TOKEN }}" >> .npmrc
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.ORG_NPM_TOKEN }}" >> .npmrc
+      - run: npm publish --access public
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.ORG_NPM_TOKEN }}
+            NODE_AUTH_TOKEN: ${{ secrets.ORG_NPM_TOKEN }}
         
