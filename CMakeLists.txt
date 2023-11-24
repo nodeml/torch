@@ -41,9 +41,6 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_JS_INC})
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/src)
 
-# Include N-API wrappers
-IncludeNapi(${PROJECT_NAME})
-
 # Essential library files to link to a node addon
 # You should add this line in every CMake.js based project
 target_link_libraries(${PROJECT_NAME} ${CMAKE_JS_LIB})
@@ -76,7 +73,7 @@ find_package(TorchVision REQUIRED)
 target_include_directories(${PROJECT_NAME} PRIVATE ${TORCH_VISION_DEPS_DIR}/include)
 target_link_libraries(${PROJECT_NAME} TorchVision::TorchVision)
 
-message(STATUS "${TORCH_INSTALL_PREFIX} ${TORCHVISION_DIR}")
+GenerateNodeLib()
 
 if (MSVC)
   file(GLOB TORCH_DLLS 

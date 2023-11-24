@@ -5,6 +5,7 @@
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
   "keywords": [
+    "nodeml",
     "torch",
     "torchvision",
     "tensor"
@@ -18,11 +19,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "cmake:rebuild": "cmake-js rebuild",
     "cmake:build": "cmake-js build",
-    "compile": "cmake-js compile",
     "pretty": "npx prettier --write .",
-    "clean": "node ./scripts/clean.js",
     "install": "prebuild-install -r napi || npm run build",
-    "installd": "cmake-js compile --debug",
     "prebuild": "prebuild --backend cmake-js --include-regex \"\\.[nsd][oyl][dl]?[ie]?b?$\" -r napi"
   },
   "author": "",
