@@ -2,9 +2,9 @@
 #include <addon/Tensor.hpp>
 #include <addon/vision/ops.hpp>
 #include <torch/torch.h>
-#include <torchvision/vision.hpp>
+#include <torchvision/vision.h>
 #include <addon/FunctionWorker.hpp>
-#include <torchvision/io/image/image.hpp>
+#include <torchvision/io/image/image.h>
 #include "io.hpp"
 
 namespace torchvision_io = vision::image;

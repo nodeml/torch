@@ -2,8 +2,8 @@
 #include <addon/Tensor.hpp>
 #include <addon/vision/ops.hpp>
 #include <torch/torch.h>
-#include <torchvision/vision.hpp>
-#include <torchvision/ops/ops.hpp>
+#include <torchvision/vision.h>
+#include <torchvision/ops/ops.h>
 
 namespace torchvision_ops = vision::ops;
 namespace nodeml_torch

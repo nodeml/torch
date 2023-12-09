@@ -1,5 +1,5 @@
 #include <addon/jit/jit.hpp>
-#include <torch/script.hpp>
+#include <torch/script.h>
 #include <addon/FunctionWorker.hpp>
 #include <addon/jit/Module.hpp>
 
