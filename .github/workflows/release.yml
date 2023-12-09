@@ -22,7 +22,9 @@ jobs:
         with:
           auto-update-conda: true
           python-version: ${{ matrix.python-version }}
-      - run: conda install -c conda-forge libjpeg-turbo libpng openjpeg
+      - run: conda install -c conda-forge libjpeg-turbo
+      - run: conda install -c conda-forge libpng
+      - run: conda install -c anaconda zlib
       - run: npm config set ignore-scripts true
       - run: npm install
       - run: npm run prebuild -- -u ${{ secrets.ORG_PREBUILD_TOKEN }}
