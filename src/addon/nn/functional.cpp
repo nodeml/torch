@@ -54,12 +54,12 @@ namespace nodeml_torch
                     if (info.Length() >= 4 && info[3].IsObject())
                     {
                         auto extraOptions = info[3].ToObject();
-                        if (extraOptions.hppas("alignCorners"))
+                        if (extraOptions.Has("alignCorners"))
                         {
                             options.align_corners(extraOptions.Get("alignCorners").ToBoolean().Value());
                         }
 
-                        if (extraOptions.hppas("antiAlias"))
+                        if (extraOptions.Has("antiAlias"))
                         {
                             options.antialias(extraOptions.Get("antiAlias").ToBoolean().Value());
                         }
