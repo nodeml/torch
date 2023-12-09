@@ -273,7 +273,7 @@ namespace nodeml_torch
 
                 myExports.Set("readImage", Napi::Function::New(env, readImage));
 
-                // myExports.Set("encodePng", Napi::Function::New(env, encodePng));
+                //myExports.Set("encodePng", Napi::Function::New(env, encodePng));
 
                 myExports.Set("encodeJpeg", Napi::Function::New(env, encodeJpeg));
 

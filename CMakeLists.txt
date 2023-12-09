@@ -15,6 +15,7 @@ find_package(JPEG REQUIRED)
 
 set(PYTORCH_VERSION 2.1.0)
 set(PYTORCH_VISION_VERSION 0.16.0)
+
 if(WITH_CUDA)
   set(TORCH_DEVICE_NAME "cuda")
 else()
@@ -23,7 +24,7 @@ endif()
 
 include(${CMAKE_SOURCE_DIR}/utils.cmake)
 
-set(TORCH_DEPS_DIR "${CMAKE_SOURCE_DIR}/deps/dynamic/libtorch")
+set(TORCH_DEPS_DIR "${CMAKE_SOURCE_DIR}/ThirdParty/dynamic/libtorch")
 list(APPEND CMAKE_PREFIX_PATH ${TORCH_DEPS_DIR})
 list(APPEND CMAKE_PREFIX_PATH "${TORCH_DEPS_DIR}/share/cmake/Torch")
 
@@ -51,23 +52,22 @@ if(MSVC AND CMAKE_JS_NODELIB_DEF AND CMAKE_JS_NODELIB_TARGET)
 endif()
 
 # Torch
-set(TORCH_DEPS_DIR ${CMAKE_SOURCE_DIR}/deps/libtorch)
+set(TORCH_DEPS_DIR ${CMAKE_SOURCE_DIR}/ThirdParty/libtorch)
 list(APPEND CMAKE_PREFIX_PATH ${TORCH_DEPS_DIR})
 list(APPEND CMAKE_PREFIX_PATH ${TORCH_DEPS_DIR}/share/cmake/Torch)
 
-DownloadTorch(${PYTORCH_VERSION} ${WITH_CUDA} ${CMAKE_SOURCE_DIR}/deps)
+DownloadTorch(${PYTORCH_VERSION} ${WITH_CUDA} ${CMAKE_SOURCE_DIR}/ThirdParty)
 
 find_package(Torch REQUIRED)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
 target_link_libraries(${PROJECT_NAME} ${TORCH_LIBRARIES})
 
 # Torchvision
-set(TORCH_VISION_DEPS_DIR ${CMAKE_SOURCE_DIR}/deps/torchvision)
+set(TORCH_VISION_DEPS_DIR ${CMAKE_SOURCE_DIR}/ThirdParty/torchvision)
 list(APPEND CMAKE_PREFIX_PATH ${TORCH_VISION_DEPS_DIR})
 list(APPEND CMAKE_PREFIX_PATH ${TORCH_VISION_DEPS_DIR}/share/cmake/TorchVision)
 
-#Download prebuilt torchvision
-BuildTorchVision(${PYTORCH_VISION_VERSION} ${CMAKE_SOURCE_DIR}/deps/)
+BuildTorchVision(${PYTORCH_VISION_VERSION} ${CMAKE_SOURCE_DIR}/ThirdParty/)
 
 find_package(TorchVision REQUIRED)
 target_include_directories(${PROJECT_NAME} PRIVATE ${TORCH_VISION_DEPS_DIR}/include)

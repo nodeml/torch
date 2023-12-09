@@ -93,6 +93,19 @@ namespace nodeml_torch
             return Napi::Value();
         }
 
+        Napi::Value JitModule::Cuda(const Napi::CallbackInfo &info)
+        {
+            try
+            {
+                torchModule.eval();
+                return Napi::Value();
+            }
+            catch (const std::exception &e)
+            {
+                throw Napi::Error::New(info.Env(), e.what());
+            }
+        }
+
         Napi::Value JitModule::toString(const Napi::CallbackInfo &info)
         {
             return Napi::Value();

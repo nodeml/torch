@@ -28,6 +28,8 @@ namespace nodeml_torch
 
             Napi::Value Eval(const Napi::CallbackInfo &info);
 
+            Napi::Value Cuda(const Napi::CallbackInfo &info);
+
             Napi::Value toString(const Napi::CallbackInfo &info);
 
             static Napi::Value IValueToJSType(Napi::Env env, const c10::IValue &iValue);

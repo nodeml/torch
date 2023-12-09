@@ -97,3 +97,4 @@ projects/
 deps/*
 prebuilds/*
 *.torchscript
+ThirdParty/*
