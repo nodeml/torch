@@ -245,7 +245,7 @@ namespace nodeml_torch
 
                 auto tensors = utils::napiArrayToVector<torch::Tensor>(info[0].As<Napi::Array>());
 
-                return Tensor::FromTorchTensor(env, torch::cat(tensors, info.Length() >= 2 ? info[1].ToNumber().Int64Value() : 0i64));
+                return Tensor::FromTorchTensor(env, info.Length() >= 2 ? torch::cat(tensors,info[1].ToNumber().Int64Value()) : torch::cat(tensors));
             }
             catch (const std::exception &e)
             {
@@ -261,7 +261,7 @@ namespace nodeml_torch
 
                 auto tensors = utils::napiArrayToVector<torch::Tensor>(info[0].As<Napi::Array>());
 
-                return Tensor::FromTorchTensor(env, torch::stack(tensors, info.Length() >= 2 ? info[1].ToNumber().Int64Value() : 0i64));
+                return Tensor::FromTorchTensor(env,info.Length() >= 2 ? torch::stack(tensors,  info[1].ToNumber().Int64Value()) : torch::stack(tensors));
             }
             catch (const std::exception &e)
             {
@@ -333,7 +333,7 @@ namespace nodeml_torch
                 auto input = Tensor::FromObject(info[0])->torchTensor;
                 auto chunks = info[1].ToNumber().Int64Value();
 
-                auto torchChunks = torch::chunk(input, chunks, info.Length() >= 3 ? info[2].ToNumber().Int64Value() : 0i64);
+                auto torchChunks = info.Length() >= 3 ? torch::chunk(input, chunks,info[2].ToNumber().Int64Value()) : torch::chunk(input, chunks);
 
                 auto result = Napi::Array::New(env, torchChunks.size());
 
