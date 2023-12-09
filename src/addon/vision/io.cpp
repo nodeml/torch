@@ -5,7 +5,7 @@
 #include <torchvision/vision.h>
 #include <addon/FunctionWorker.hpp>
 #include <torchvision/io/image/image.h>
-#include "io.hpp"
+#include <addon/vision/io.hpp>
 
 namespace torchvision_io = vision::image;
 namespace nodeml_torch
