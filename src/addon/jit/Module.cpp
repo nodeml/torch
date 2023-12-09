@@ -1,7 +1,7 @@
-#include <addon/jit/Module.h>
-#include <addon/FunctionWorker.h>
-#include <addon/Tensor.h>
-#include "Module.h"
+#include <addon/jit/Module.hpp>
+#include <addon/FunctionWorker.hpp>
+#include <addon/Tensor.hpp>
+#include "Module.hpp"
 namespace nodeml_torch
 {
     namespace jit

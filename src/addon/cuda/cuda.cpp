@@ -1,7 +1,6 @@
 #include <napi.h>
-#include <addon/cuda/cuda.h>
+#include <addon/cuda/cuda.hpp>
 #include <torch/torch.h>
-#include "cuda.h"
 
 namespace nodeml_torch
 {

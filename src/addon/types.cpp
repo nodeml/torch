@@ -1,4 +1,4 @@
-#include <addon/types.h>
+#include <addon/types.hpp>
 
 namespace nodeml_torch
 {

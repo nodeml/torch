@@ -1,7 +1,7 @@
-#include <addon/utils.h>
-#include <addon/types.h>
-#include <addon/FunctionWorker.h>
-#include <addon/Tensor.h>
+#include <addon/utils.hpp>
+#include <addon/types.hpp>
+#include <addon/FunctionWorker.hpp>
+#include <addon/Tensor.hpp>
 
 namespace nodeml_torch
 {
@@ -211,7 +211,7 @@ namespace nodeml_torch
 
         torch::indexing::TensorIndex napiValueToTorchIndex(Napi::Env &env, const Napi::Value &value)
         {
-            // https: // pytorch.org/cppdocs/notes/tensor_indexing.html#setter
+            // https: // pytorch.org/cppdocs/notes/tensor_indexing.hpptml#setter
 
             if (value.IsNull())
             {

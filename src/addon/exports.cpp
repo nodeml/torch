@@ -1,12 +1,12 @@
 #include <napi.h>
-#include <addon/Tensor.h>
-#include <addon/utils.h>
-#include <addon/types.h>
-#include <addon/aten.h>
-#include <addon/nn/nn.h>
-#include <addon/jit/jit.h>
-#include <addon/vision/vision.h>
-#include <addon/cuda/cuda.h>
+#include <addon/Tensor.hpp>
+#include <addon/utils.hpp>
+#include <addon/types.hpp>
+#include <addon/aten.hpp>
+#include <addon/nn/nn.hpp>
+#include <addon/jit/jit.hpp>
+#include <addon/vision/vision.hpp>
+#include <addon/cuda/cuda.hpp>
 
 Napi::Object InitModule(Napi::Env env, Napi::Object exports)
 {

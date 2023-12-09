@@ -1,8 +1,8 @@
-#include <addon/nn/functional.h>
-#include <addon/Tensor.h>
-#include <addon/utils.h>
+#include <addon/nn/functional.hpp>
+#include <addon/Tensor.hpp>
+#include <addon/utils.hpp>
 #include <torch/torch.h>
-#include "functional.h"
+#include "functional.hpp"
 
 namespace nodeml_torch
 {
@@ -54,12 +54,12 @@ namespace nodeml_torch
                     if (info.Length() >= 4 && info[3].IsObject())
                     {
                         auto extraOptions = info[3].ToObject();
-                        if (extraOptions.Has("alignCorners"))
+                        if (extraOptions.hppas("alignCorners"))
                         {
                             options.align_corners(extraOptions.Get("alignCorners").ToBoolean().Value());
                         }
 
-                        if (extraOptions.Has("antiAlias"))
+                        if (extraOptions.hppas("antiAlias"))
                         {
                             options.antialias(extraOptions.Get("antiAlias").ToBoolean().Value());
                         }

@@ -1,9 +1,7 @@
-#include <addon/Tensor.h>
-#include <addon/types.h>
-#include <addon/utils.h>
+#include <addon/Tensor.hpp>
+#include <addon/types.hpp>
+#include <addon/utils.hpp>
 #include <exception>
-#include <torch/torch.h>
-#include "Tensor.h"
 #include <iostream>
 
 namespace nodeml_torch
@@ -41,46 +39,6 @@ namespace nodeml_torch
             return arr;
         }
     }
-    // 23 times slower than js equivalent
-    // template <typename T>
-    // Napi::Value tensorToMultiArray(Napi::Env env, const torch::Tensor &torchTensor, std::function<Napi::Value(Napi::Env, T)> converter)
-    // {
-    //     auto shape = torchTensor.sizes();
-
-    //     auto result = Napi::Array::New(env, shape.at(0));
-    //     assert(torchTensor.is_contiguous());
-
-    //     T *ptr = (T *)torchTensor.data_ptr();
-
-    //     for (auto i = 0; i < torchTensor.numel(); i++)
-    //     {
-    //         auto position = result;
-    //         auto index = i;
-    //         auto len = shape.size() - 1;
-    //         for (auto j = len; j >= 0 && j <= len; j--)
-    //         {
-    //             auto currentShape = shape.at(j);
-    //             auto currentIndex = index % currentShape;
-    //             index = index / currentShape;
-
-    //             if (position.Get(uint32_t(currentIndex)).IsUndefined())
-    //             {
-    //                 if (j == 0)
-    //                 {
-    //                     position.Set(uint32_t(currentIndex), converter(env, *ptr++));
-    //                 }
-    //                 else
-    //                 {
-    //                     position.Set(uint32_t(currentIndex), Napi::Array::New(env, currentShape));
-    //                 }
-    //             }
-
-    //             position = position.Get(uint32_t(currentIndex)).As<Napi::Array>();
-    //         }
-    //     }
-
-    //     return result;
-    // }
 
     template <typename T>
     torch::Tensor arrayToTensor(
@@ -90,7 +48,7 @@ namespace nodeml_torch
         auto shape = napiArrayToVector<std::int64_t>(shape_array);
         torch::TensorOptions options(scalarType<T>());
         auto torch_tensor = torch::empty(shape, options);
-        memcpy(torch_tensor.data<T>(), data_ptr, sizeof(T) * torch_tensor.numel());
+        memcpy(torch_tensor.data_ptr<T>(), data_ptr, sizeof(T) * torch_tensor.numel());
         return torch_tensor;
     }
 
@@ -608,13 +566,25 @@ namespace nodeml_torch
         {
             if (info[0].IsArray())
             {
-                auto tensors = torchTensor.split(utils::napiArrayToVector<int64_t>(info[0].As<Napi::Array>()), info.Length() >= 1 ? info[1].As<Napi::Number>().Int64Value() : 0i64);
-                return utils::vectorToNapiArray(env, tensors);
+                if (info.Length() >= 1)
+                {
+                    return utils::vectorToNapiArray(env, torchTensor.split(utils::napiArrayToVector<int64_t>(info[0].As<Napi::Array>()), info[1].As<Napi::Number>().Int64Value()));
+                }
+                else
+                {
+                    return utils::vectorToNapiArray(env, torchTensor.split(utils::napiArrayToVector<int64_t>(info[0].As<Napi::Array>())));
+                }
             }
             else
             {
-                auto tensors = torchTensor.split(info[0].As<Napi::Number>().Int64Value(), info.Length() >= 1 ? info[1].As<Napi::Number>().Int64Value() : 0i64);
-                return utils::vectorToNapiArray(env, tensors);
+                if (info.Length() >= 1)
+                {
+                    return utils::vectorToNapiArray(env, torchTensor.split(info[0].As<Napi::Number>().Int64Value(),info[1].As<Napi::Number>().Int64Value()));
+                }
+                else
+                {
+                    return utils::vectorToNapiArray(env, torchTensor.split(info[0].As<Napi::Number>().Int64Value()));
+                }
             }
         }
         catch (const std::exception &e)

@@ -1,7 +1,7 @@
-#include "aten.h"
+#include "aten.hpp"
 
-#include <addon/Tensor.h>
-#include <addon/utils.h>
+#include <addon/Tensor.hpp>
+#include <addon/utils.hpp>
 
 namespace nodeml_torch
 {

@@ -1,11 +1,11 @@
 #include <napi.h>
-#include <addon/Tensor.h>
-#include <addon/vision/ops.h>
+#include <addon/Tensor.hpp>
+#include <addon/vision/ops.hpp>
 #include <torch/torch.h>
-#include <torchvision/vision.h>
-#include <addon/FunctionWorker.h>
-#include <torchvision/io/image/image.h>
-#include "io.h"
+#include <torchvision/vision.hpp>
+#include <addon/FunctionWorker.hpp>
+#include <torchvision/io/image/image.hpp>
+#include "io.hpp"
 
 namespace torchvision_io = vision::image;
 namespace nodeml_torch

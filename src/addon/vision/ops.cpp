@@ -1,9 +1,9 @@
 #include <napi.h>
-#include <addon/Tensor.h>
-#include <addon/vision/ops.h>
+#include <addon/Tensor.hpp>
+#include <addon/vision/ops.hpp>
 #include <torch/torch.h>
-#include <torchvision/vision.h>
-#include <torchvision/ops/ops.h>
+#include <torchvision/vision.hpp>
+#include <torchvision/ops/ops.hpp>
 
 namespace torchvision_ops = vision::ops;
 namespace nodeml_torch
