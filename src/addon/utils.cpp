@@ -187,7 +187,7 @@ namespace nodeml_torch
             return torch::kFloat32;
         }
 
-        bool isNapiValueInt(Napi::Env &env, Napi::Value num)
+        bool isNapiValueInt(Napi::Env env, Napi::Value num)
         {
             return env.Global()
                 .Get("Number")
@@ -209,7 +209,7 @@ namespace nodeml_torch
             return value.ToNumber().Int64Value();
         }
 
-        torch::indexing::TensorIndex napiValueToTorchIndex(Napi::Env &env, const Napi::Value &value)
+        torch::indexing::TensorIndex napiValueToTorchIndex(Napi::Env env, const Napi::Value &value)
         {
             // https: // pytorch.org/cppdocs/notes/tensor_indexing.hpptml#setter
 
