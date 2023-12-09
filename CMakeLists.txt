@@ -29,7 +29,7 @@ list(APPEND CMAKE_PREFIX_PATH ${TORCH_DEPS_DIR})
 list(APPEND CMAKE_PREFIX_PATH "${TORCH_DEPS_DIR}/share/cmake/Torch")
 
 # Build a shared library named after the project from the files in `src/`
-file(GLOB_RECURSE SOURCE_FILES "src/*.cc" "src/*.h")
+file(GLOB_RECURSE SOURCE_FILES "src/*.cpp" "src/*.hpp")
 
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES} ${CMAKE_JS_SRC})
 
