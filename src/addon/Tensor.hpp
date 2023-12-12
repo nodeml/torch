@@ -19,7 +19,7 @@ namespace nodeml_torch
 
         static Napi::Object Init(Napi::Env env, Napi::Object exports);
 
-        static bool IsInstance(Napi::Object &obj);
+        static bool IsInstance(const Napi::Object &obj);
 
         Tensor(const Napi::CallbackInfo &info);
 

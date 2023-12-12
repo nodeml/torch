@@ -110,7 +110,7 @@ namespace nodeml_torch
         return exports;
     }
 
-    bool Tensor::IsInstance(Napi::Object &obj)
+    bool Tensor::IsInstance(const Napi::Object &obj)
     {
         return obj.InstanceOf(constructor.Value());
     }
