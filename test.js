@@ -44,15 +44,15 @@ const formatMemoryUsage = (data) => `${Math.round(data / 1024 / 1024 * 100) / 10
 // const x = torch.tensor([true,false,true])
 // console.log(x.dtype,x.get([null,2]).toArray())
 async function main() {
-    
-    let x = torch.arange(1000)
-    const y = 1
-    // x.set([0,null],torch.tensor([1,1,1,1,1,1])  )
-    const start = formatMemoryUsage(process.memoryUsage().heapUsed)
-    // for(let i = 0; i < 10000000; i++){
-    //     x = x.add(y)
-    //     console.log(start,formatMemoryUsage(process.memoryUsage().heapUsed))
-    // }
+    console.log(torch.types)
+    // let x = torch.arange(1000)
+    // const y = 1
+    // // x.set([0,null],torch.tensor([1,1,1,1,1,1])  )
+    // const start = formatMemoryUsage(process.memoryUsage().heapUsed)
+    // // for(let i = 0; i < 10000000; i++){
+    // //     x = x.add(y)
+    // //     console.log(start,formatMemoryUsage(process.memoryUsage().heapUsed))
+    // // }
     
 }
 
