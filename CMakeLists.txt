@@ -6,12 +6,11 @@ set(CMAKE_CXX_STANDARD 17)
 
 option(WITH_CUDA "Enable CUDA support" OFF)
 
-add_definitions(-DNAPI_VERSION=4)
-
 include_directories(${CMAKE_JS_INC})
 
 find_package(PNG REQUIRED)
 find_package(JPEG REQUIRED)
+find_package(ZLIB REQUIRED)
 
 set(PYTORCH_VERSION 2.1.0)
 set(PYTORCH_VISION_VERSION 0.16.0)
@@ -46,11 +45,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/src)
 # You should add this line in every CMake.js based project
 target_link_libraries(${PROJECT_NAME} ${CMAKE_JS_LIB})
 
-# Node lib
-if(MSVC AND CMAKE_JS_NODELIB_DEF AND CMAKE_JS_NODELIB_TARGET)
-  execute_process(COMMAND ${CMAKE_AR} /def:${CMAKE_JS_NODELIB_DEF} /out:${CMAKE_JS_NODELIB_TARGET} ${CMAKE_STATIC_LINKER_FLAGS})
-endif()
-
 # Torch
 set(TORCH_DEPS_DIR ${CMAKE_SOURCE_DIR}/ThirdParty/libtorch)
 list(APPEND CMAKE_PREFIX_PATH ${TORCH_DEPS_DIR})
@@ -77,11 +71,13 @@ GenerateNodeLib()
 
 if (MSVC)
   file(GLOB TORCH_DLLS 
-    "${TORCH_INSTALL_PREFIX}/lib/*"
-    "${TORCH_INSTALL_PREFIX}/lib/*" 
-    "${TORCH_VISION_DEPS_DIR}/lib/*"  
-    "${TORCH_VISION_DEPS_DIR}/bin/*"
+    "${TORCH_INSTALL_PREFIX}/lib/*dll"
+    "${TORCH_VISION_DEPS_DIR}/bin/*.dll"  
+    #"${TORCH_VISION_DEPS_DIR}/bin/*"
     )
+  list(APPEND TORCH_DLLS ${PNG_LIBRARY})
+  list(APPEND TORCH_DLLS ${JPEG_LIBRARY})
+  list(APPEND TORCH_DLLS ${ZLIB_LIBRARY})
   # message(STATUS "COPYING ${TORCH_DLLS}")
   add_custom_command(TARGET ${PROJECT_NAME}
                      POST_BUILD

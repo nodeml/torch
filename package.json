@@ -1,6 +1,6 @@
 {
   "name": "@nodeml/torch",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "description": "A libtorch binding for nodejs. Currently only supports cpu operations",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
