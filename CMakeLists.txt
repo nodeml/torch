@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.18 FATAL_ERROR)
 project(nodeml_torch VERSION 1.0)
 
 set(CMAKE_CXX_STANDARD 17)
-
+add_definitions(-DNAPI_VERSION=7)
 option(WITH_CUDA "Enable CUDA support" OFF)
 
 include_directories(${CMAKE_JS_INC})

@@ -20,8 +20,8 @@
     "cmake:rebuild": "cmake-js rebuild",
     "cmake:build": "cmake-js build",
     "pretty": "npx prettier --write .",
-    "install": "prebuild-install -r napi || npm run build",
-    "prebuild": "prebuild --backend cmake-js --include-regex \"\\.(node|a|lib|dll)$\" -r napi"
+    "install": "prebuild-install --runtime napi || npm run build",
+    "prebuild": "prebuild --backend cmake-js --include-regex \"\\.(node|a|lib|dll)$\" --runtime napi --all"
   },
   "author": "",
   "license": "ISC",
