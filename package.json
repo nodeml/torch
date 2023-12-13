@@ -1,6 +1,6 @@
 {
   "name": "@nodeml/torch",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "A libtorch binding for nodejs. Currently only supports cpu operations",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
@@ -21,7 +21,7 @@
     "cmake:build": "cmake-js build",
     "pretty": "npx prettier --write .",
     "install": "prebuild-install -r napi || npm run build",
-    "prebuild": "prebuild --backend cmake-js --include-regex \"\\.[nsd][oyl][dl]?[ie]?b?$\" -r napi"
+    "prebuild": "prebuild --backend cmake-js --include-regex \"\\.(node|a|lib|dll)$\" -r napi"
   },
   "author": "",
   "license": "ISC",
